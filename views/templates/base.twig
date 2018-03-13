@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/assests/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assests/css/filehosting.css">
+    <title> {% block title %} {% endblock %}</title>
+</head>
+<body>
+<nav class="navbar navbar-light bg-light border-bottom box-shadow">
+    <div class="container">
+    <a class="navbar-brand" href="#">👻</a>
+    <ul class="navbar-nav mr-auto ml-2">
+        <li class="nav-item">
+            <a class="nav-link" href="#">Топ Файлов</a>
+        </li>
+    </ul>
+        <form action="" method="GET" class="form-inline mt-2 mt-md-0">
+            <input class="form-control mr-sm-2" type="text" name="search" placeholder="Имя файла" aria-label="Поиск">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Искать</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container">
+{% block content %} {% endblock %}
+</div>
+</body>
+</html>

@@ -1,18 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Супер хостинг файлов</title>
-</head>
-<body>
+{% extends "base.twig" %}
+{% block title %} Хуита {% endblock %}
+
+{% block content %}
+
+    <div class="card text-center ">
+        <div class="card-header">
+
+        </div>
+        <div class="card-body">
+            <a href="#" class="btn btn-primary">Загрузить Файл</a><br>
+            <span class="badge badge-primary">Размер файла не более 200 МБ</span>
+            <h5 class="card-title">Ваш файл будет храниться в нашем хранилище 60 дней</h5>
+            <p class="card-text">Вы можете также перетащить файл сюдп</p>
+            <p>Размер файла не более 200 МБ</p>
+
+        </div>
+    </div>
     <form action="" method="POST" enctype="multipart/form-data">
         <input type="file" name="userFile">
         <input type="hidden" name="{{csrfNameKey  }}" value="{{ csrfName }}">
         <input type="hidden" name="{{ csrfValueKey }}" value="{{ csrfValue }}"><br>
         <input type="submit" value="Загрузить"/>
     </form>
-    <pre>
-        <img src="../../storage/17-Feb-2018/15066421821573s.jpg">
-    </pre>
-</body>
-</html>
+{% endblock %}

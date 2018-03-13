@@ -1,24 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Супер хостинг файлов</title>
-</head>
-<body>
-<form action="" method="GET" enctype="multipart/form-data">
+{% extends "base.twig" %}
+{% block title %} Хуита {% endblock %}
+{% block content %}
+
 
    <a href="/file/{{fileId}}/{{ fileName }}">Скачать файл</a>
 
-</form>
 
-<form action="" method="POST">
-    <input type="text" size="100" name="comment">
-    <input type="text" size="50" name="author" value="Анонимус">
-    <input type="hidden" name="parentComment" value="{{ commentNode.object.getId }}">
-    <input type="hidden" name="{{csrfNameKey  }}" value="{{ csrfName }}">
-    <input type="hidden" name="{{ csrfValueKey }}" value="{{ csrfValue }}"><br>
-    <input type="submit" value="Добавить комментарий">
-</form>
 
-</body>
-</html>
+
+{% endblock %}

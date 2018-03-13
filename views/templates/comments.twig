@@ -1,0 +1,8 @@
+<form action="" method="POST">
+    <input type="text" size="100" name="comment">
+    <input type="text" size="50" name="author" value="Анонимус">
+    <input type="hidden" name="parentComment" value="">
+    <input type="hidden" name="{{csrfNameKey  }}" value="{{ csrfName }}">
+    <input type="hidden" name="{{ csrfValueKey }}" value="{{ csrfValue }}"><br>
+    <input type="submit" value="Добавить комментарий">
+</form>
