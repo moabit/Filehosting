@@ -50,4 +50,9 @@ class File extends Model
         return false;
     }
 
+    public function comments()
+    {
+        return $this->hasMany('Filehosting\Models\Comment');
+    }
+
 }

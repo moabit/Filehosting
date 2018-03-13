@@ -86,8 +86,7 @@ class HomeController extends Controller
      */
     public function test($request, $response, array $args = [])
     {
-        $file=File::find(40);
-        $info=$this->container['getID3']->analyze($this->container['fileSystem']->getAbsolutePathToFile($file));
-        var_dump($info);
+
+
     }
 }
