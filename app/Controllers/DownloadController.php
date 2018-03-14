@@ -39,16 +39,17 @@ class DownloadController extends Controller
             return $response->withStatus(404);
         }
         $this->container['uploaderAuth']->checkUploaderToken($file, $request);
-        var_dump($request->getAttribute('routeInfo')[2])['id'];
-
-        var_dump($this->container['uploaderAuth']->isAuth($request));
+        //var_dump($request->getAttribute('routeInfo')[2])['id'];
+        $link=$request->getUri();
+      //  var_dump($this->container['uploaderAuth']->isAuth($request));
 
         return $this->container['twig']->render($response, 'downloadPage.twig', ['csrfNameKey' => $csrfNameKey,
             'csrfValueKey' => $csrfValueKey,
             'csrfName' => $csrfName,
             'csrfValue' => $csrfValue,
-            'fileId' => $fileId,
-            'fileName' => $file->original_name]);
+            'file' => $file,
+            'link'=>$link
+                ]);
     }
 
     /**

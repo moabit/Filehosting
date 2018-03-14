@@ -1,11 +1,43 @@
 {% extends "base.twig" %}
-{% block title %} Хуита {% endblock %}
+{% block title %} Скачать Файл - {{ file.original_name }} {% endblock %}
 {% block content %}
 
+    <div class="card  mt-4">
+        <div class="card-body">
+            <h4>{{ file.original_name }}</h4><br>
+            <div class="row">
+                <div class="col-4">
+                    <a href="/file/{{ file.id }}/{{ file.original_name }}" class="btn btn-primary btn-lg ml-5">Скачать файл</a>
+                </div>
+                <div class="col-8">
+                    <table class="table table-bordered text-center">
+                        <thead>
+                        <tr>
+                            <th scope="col">Имя</th>
+                            <th scope="col">Размер</th>
+                            <th scope="col">Дата загрузки</th>
+                            <th scope="col">Число скачиваний</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{ file.original_name }}</td>
+                            <td>{{ file.size }}</td>
+                            <td>{{ file.upload_date }}</td>
+                            <td>{{ file.download_counter }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-   <a href="/file/{{fileId}}/{{ fileName }}">Скачать файл</a>
-
-
-
+            <div class="row">
+                <div class="col-4">
+                    <laber for=""> Ссылка</laber>
+            <input class="form-control" type="text" placeholder="Readonly input here…" value="{{ link }}" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

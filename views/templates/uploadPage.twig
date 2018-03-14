@@ -1,25 +1,26 @@
 {% extends "base.twig" %}
-{% block title %} Хуита {% endblock %}
-
+{% block title %} Анонимный Файлообменник {% endblock %}
 {% block content %}
-
-    <div class="card text-center ">
-        <div class="card-header">
-
-        </div>
+    <div class="card text-center mt-4" id="dropzone">
         <div class="card-body">
-            <a href="#" class="btn btn-primary">Загрузить Файл</a><br>
-            <span class="badge badge-primary">Размер файла не более 200 МБ</span>
-            <h5 class="card-title">Ваш файл будет храниться в нашем хранилище 60 дней</h5>
-            <p class="card-text">Вы можете также перетащить файл сюдп</p>
-            <p>Размер файла не более 200 МБ</p>
-
+            <div class="row">
+                <div class="col-sm-4 offset-sm-4">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="{{ csrfNameKey }}" value="{{ csrfName }}">
+                        <input type="hidden" name="{{ csrfValueKey }}" value="{{ csrfValue }}">
+                        <input type="file" hidden name="userFile" class="custom-file-input" id="inputFileUpload">
+                        <label class="btn btn-primary  btn-block  mt-5" for="inputFileUpload" id="labelUpload">Выберите файл</label>
+                        <input type="submit"  class="btn btn-primary  btn-block  mb-4" id="submitFileUploadButton" value="Загрузить">
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col mb-5">
+                    <span class="badge badge-primary">Вы можете перетащить файл</span>
+                    <span class="badge badge-primary">Размер файла не более 200 МБ</span>
+                    <span class="badge badge-primary">Срок хранения - 60 дней</span>
+                </div>
+            </div>
         </div>
     </div>
-    <form action="" method="POST" enctype="multipart/form-data">
-        <input type="file" name="userFile">
-        <input type="hidden" name="{{csrfNameKey  }}" value="{{ csrfName }}">
-        <input type="hidden" name="{{ csrfValueKey }}" value="{{ csrfValue }}"><br>
-        <input type="submit" value="Загрузить"/>
-    </form>
 {% endblock %}
