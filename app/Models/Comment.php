@@ -13,10 +13,11 @@ class Comment extends Model
 
     public $timestamps = false;
 
-    public function getComments ()
-    {
-       return $this->whereFileId($this->file_id)->orderBy('matpath','asc')->get();
-    }
+    protected $fillable = ['file_id', 'author', 'text'];
+
+
+
+
 
 
 }

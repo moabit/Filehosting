@@ -5,11 +5,11 @@ namespace Filehosting\Traits;
 
 trait MaterializedPathTrait
 {
-    public function makeRoot(string $foreignKeyName): void
+    public function makeRoot(): void
     {
-        $maxRootPath = intval($this->where($foreignKeyName, $this->$foreignKeyName)->max('matpath'));
-        $path = $maxRootPath++;
-        $this->matpath = $this->toPath($maxPath);
+        $maxRootPath = intval($this->where('file_id',$this->file_id)->where('parent_id', null)->get()->max ('matpath'));
+        $path = $maxRootPath +1;
+        $this->matpath = $this->toPath($path);
     }
 
     public function makeChild(): void
@@ -43,6 +43,11 @@ trait MaterializedPathTrait
     private function toPath(int $int): string
     {
         return str_pad($int, 3, '0', STR_PAD_LEFT);
+    }
+
+    public function getDepth () :int
+    {
+        return count ($this->getExplodedMatpath($this->matpath));
     }
 
 

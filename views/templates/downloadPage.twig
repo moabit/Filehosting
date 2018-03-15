@@ -7,7 +7,8 @@
             <h4>{{ file.original_name }}</h4><br>
             <div class="row">
                 <div class="col-4">
-                    <a href="/file/{{ file.id }}/{{ file.original_name }}" class="btn btn-primary btn-lg ml-5">Скачать файл</a>
+                    <a href="/file/{{ file.id }}/{{ file.original_name }}" class="btn btn-primary btn-lg ml-5">Скачать
+                        файл</a>
                 </div>
                 <div class="col-8">
                     <table class="table table-bordered text-center">
@@ -34,10 +35,37 @@
             <div class="row">
                 <div class="col-4">
                     <laber for=""> Ссылка</laber>
-            <input class="form-control" type="text" placeholder="Readonly input here…" value="{{ link }}" readonly>
+                    <input class="form-control" type="text" placeholder="Readonly input here…" value="{{ link }}"
+                           readonly>
                 </div>
             </div>
         </div>
     </div>
+    <div class="card mt-3">
+        <div class="card-body">
+            <form action="" method="POST">
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Email address</label>
+                    <input class="form-control" type="text" name="author" placeholder="Аноним">
+                    <label for="exampleFormControlInput1">Email address</label>
+                    <textarea class="form-control" name="comment" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    <input class="form-control" type="hidden" name="parentId" placeholder="">
+                    <input type="hidden" name="{{ csrfNameKey }}" value="{{ csrfName }}">
+                    <input type="hidden" name="{{ csrfValueKey }}" value="{{ csrfValue }}">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% import 'generateOffset.twig' as generate %}
+    {% for comment in comments %}
+    <div class="card mt-3">
+        <div class="card-body">
+              {{ comment.text}}<br>
+            {{ generate.generateOffset(comment.getDepth ()) }}  {{ comment.matpath }} <br>
 
+
+        </div>
+    </div>
+        {% endfor %}
 {% endblock %}

@@ -4,7 +4,9 @@ namespace Filehosting\Controllers;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Filehosting\Models\File;
+use Filehosting\Models\{
+    File, Comment
+};
 
 /**
  * Class DownloadController
@@ -38,18 +40,20 @@ class DownloadController extends Controller
         if (!$file) {
             return $response->withStatus(404);
         }
+        $comments = $file->getSortedComments();
         $this->container['uploaderAuth']->checkUploaderToken($file, $request);
         //var_dump($request->getAttribute('routeInfo')[2])['id'];
-        $link=$request->getUri();
-      //  var_dump($this->container['uploaderAuth']->isAuth($request));
+        $link = $request->getUri();
+        //  var_dump($this->container['uploaderAuth']->isAuth($request));
 
         return $this->container['twig']->render($response, 'downloadPage.twig', ['csrfNameKey' => $csrfNameKey,
             'csrfValueKey' => $csrfValueKey,
             'csrfName' => $csrfName,
             'csrfValue' => $csrfValue,
             'file' => $file,
-            'link'=>$link
-                ]);
+            'link' => $link,
+            'comments' => $comments
+        ]);
     }
 
     /**
@@ -100,23 +104,27 @@ class DownloadController extends Controller
         return $response->write('удолил');
     }
 
-    public function addComment (Request $request, Response $response, array $args = [])
+    public function addComment(Request $request, Response $response, array $args = [])
     {
         $file = File::find(intval($args['id']));
-       // Parses POST-vars
-        $commentText= $request->getParam('author');
-        $commentAuthor=$request->getParam('author');
-        $parentID=$request->getParam('parentID');
-        // $comment=Comment::create(['field'=>$value]);
-        $comment->setMatpath ();
-        $comment->save ();
-
+        // Parses POST-vars
+        $commentAuthor = $request->getParam('author');
+        $commentText = $request->getParam('comment');
+        $parentId = $request->getParam('parentId');
+        $comment = new Comment ();
+        $comment->fill(['file_id' => $file->id, 'text' => $commentText, 'author' => $commentAuthor, 'parent_id'=>$parentId]);
+        if ($comment->parent_id == null) {
+            $comment->makeRoot();
+        } else {
+            $comment->makeChild();
+        }
+        $comment->save();
     }
 
-    private function getComments ($file)
+    private function getComments($file)
     {
-        $fileId=$file->id;
-        if(is_null($fileId)) { // root comment
+        $fileId = $file->id;
+        if (is_null($fileId)) { // root comment
             $maxPath = $this->commentMapper->getRootMaxPath($comment->getFileId());
             $maxPath = intval($maxPath) + 1;
             $comment->setMatPath($this->normalizePath($maxPath));
