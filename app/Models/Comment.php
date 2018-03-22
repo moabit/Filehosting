@@ -13,7 +13,7 @@ class Comment extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['file_id', 'author', 'text'];
+    protected $fillable = ['file_id','parent_id', 'author', 'text'];
 
 
 

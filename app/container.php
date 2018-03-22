@@ -23,7 +23,7 @@ $container['twig'] = function (Container $c): \Slim\Views\Twig {
 };
 // Slim CSRF Guard
 $container['csrf'] = function (Container $c): \Slim\Csrf\Guard {
-    return new \Slim\Csrf\Guard();
+    return new \Slim\Csrf\Guard('csrf',$storage=null, null, 200, 16, true);
 };
 // GetID3
 require_once(__DIR__ . '/../vendor/james-heinrich/getid3/getid3/getid3.php');

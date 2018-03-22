@@ -1,19 +1,13 @@
-.card {
-    height: 400px;
-}
-
 .navbar-brand {
     font-size: 3em;
 }
 
 #dropzone.dragover {
     background: #ddd;
-    border-color: #aaa;
 }
 
 #dropzone.drop {
     background: #afa;
-    border-color: #0f0;
 }
 
 #inputFileButton {

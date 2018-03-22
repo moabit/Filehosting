@@ -46,7 +46,7 @@ class DownloadController extends Controller
         $link = $request->getUri();
         //  var_dump($this->container['uploaderAuth']->isAuth($request));
 
-        return $this->container['twig']->render($response, 'downloadPage.twig', ['csrfNameKey' => $csrfNameKey,
+        return $this->container['twig']->render($response, 'download.twig', ['csrfNameKey' => $csrfNameKey,
             'csrfValueKey' => $csrfValueKey,
             'csrfName' => $csrfName,
             'csrfValue' => $csrfValue,
@@ -106,36 +106,23 @@ class DownloadController extends Controller
 
     public function addComment(Request $request, Response $response, array $args = [])
     {
+
         $file = File::find(intval($args['id']));
         // Parses POST-vars
         $commentAuthor = $request->getParam('author');
         $commentText = $request->getParam('comment');
-        $parentId = $request->getParam('parentId');
+        $parentId = intval($request->getParam('parentId'));
         $comment = new Comment ();
-        $comment->fill(['file_id' => $file->id, 'text' => $commentText, 'author' => $commentAuthor, 'parent_id'=>$parentId]);
+        $comment->fill(['file_id' => $file->id, 'text' => $commentText, 'author' => $commentAuthor, 'parent_id' => $parentId]);
         if ($comment->parent_id == null) {
             $comment->makeRoot();
         } else {
-            $comment->makeChild();
+          $comment->makeChild();
         }
         $comment->save();
-    }
-
-    private function getComments($file)
-    {
-        $fileId = $file->id;
-        if (is_null($fileId)) { // root comment
-            $maxPath = $this->commentMapper->getRootMaxPath($comment->getFileId());
-            $maxPath = intval($maxPath) + 1;
-            $comment->setMatPath($this->normalizePath($maxPath));
-        } else { // child comment
-            $parentComment = $this->commentMapper->getComment($comment->getParentId());
-            $comment->setMatPath($parentComment->getMatPath());
-            $rawPath = $this->commentMapper->getChildMaxPath($comment->getParentId());
-            $splitPath = $this->splitPath($rawPath);
-            $maxPath = intval($splitPath[count($splitPath) - 1]);
-            $maxPath = is_null($maxPath) ? 0 : intval($maxPath) + 1;
-            $comment->addToPath($this->normalizePath($maxPath));
+       if ($request->isXhr()) {
+           return $response->withJson($comment);
         }
     }
+
 }

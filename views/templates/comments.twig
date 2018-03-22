@@ -1,8 +1,33 @@
-<form action="" method="POST">
-    <input type="text" size="100" name="comment">
-    <input type="text" size="50" name="author" value="Анонимус">
-    <input type="hidden" name="parentComment" value="">
-    <input type="hidden" name="{{csrfNameKey  }}" value="{{ csrfName }}">
-    <input type="hidden" name="{{ csrfValueKey }}" value="{{ csrfValue }}"><br>
-    <input type="submit" value="Добавить комментарий">
-</form>
+<div class="card mt-3 p-5">
+    <div class="card-body">
+        <div class="alert alert-danger" role="alert">
+            This is a danger alert—check it out!
+        </div>
+        <form action="" method="POST" id="mainCommentForm">
+            <div class="form-group">
+                <label for="exampleFormControlInput1">Email address</label>
+                <input class="form-control" type="text" name="author" value="Аноним">
+                <label for="exampleFormControlInput1">Email address</label>
+                <textarea class="form-control" name="comment" id="textarea" rows="3"></textarea>
+                <input class="form-control" type="hidden" name="parentId"  value="">
+                <input type="hidden" name="{{ csrfNameKey }}" value="{{ csrfName }}">
+                <input type="hidden" name="{{ csrfValueKey }}" value="{{ csrfValue }}">
+                <button type="submit" class="btn btn-primary" id="submitButton" onClick="addComment(event, this.id)">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="card mt-3">
+    <div class="card-body p-5" id="commentBlock">
+        {% for comment in comments %}
+            <div style="padding-left:{{ comment.getDepth()*30 }}px" id="{{ comment.id }}" class="m-1 border p-3">
+
+             <div>{{ comment.author }} {{ comment.posted|date("m/d/Y") }}</div><br>
+              <div>{{ comment.text }}
+                <button type="button" class="btn btn-primary btn-sm float-sm-right reply" id="{{ comment.id }}"
+                        onClick="showReplyForm(this.id)">Ответить
+                </button></div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

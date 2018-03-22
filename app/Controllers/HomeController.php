@@ -37,7 +37,7 @@ class HomeController extends Controller
         $csrfValueKey = $this->container['csrf']->getTokenValueKey();
         $csrfName = $request->getAttribute($csrfNameKey);
         $csrfValue = $request->getAttribute($csrfValueKey);
-        return $this->container['twig']->render($response, 'uploadPage.twig', ['csrfNameKey' => $csrfNameKey,
+        return $this->container['twig']->render($response, 'upload.twig', ['csrfNameKey' => $csrfNameKey,
             'csrfValueKey' => $csrfValueKey,
             'csrfName' => $csrfName,
             'csrfValue' => $csrfValue]);
