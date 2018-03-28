@@ -77,17 +77,4 @@ class HomeController extends Controller
         return $response = $this->container['uploaderAuth']->setUploaderToken($model->id, $uploaderToken, $response);
 
     }
-
-
-    /**
-     * @param $request
-     * @param $response
-     * @param array $args
-     */
-    public function test($request, $response, array $args = [])
-    {
-       var_dump($file=File::find(52));
-        var_dump ($file->getSortedComments());
-
-    }
 }

@@ -117,12 +117,12 @@ class DownloadController extends Controller
         if ($comment->parent_id == null) {
             $comment->makeRoot();
         } else {
-          $comment->makeChild();
+            $comment->makeChild();
         }
         $comment->save();
-       if ($request->isXhr()) {
-           return $response->withJson($comment);
+        if ($request->isXhr()) {
+            return $response->withJson($comment);
         }
+        return $response->withRedirect($request->getUri());
     }
-
 }

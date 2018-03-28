@@ -20,13 +20,14 @@
 <div class="card mt-3">
     <div class="card-body p-5" id="commentBlock">
         {% for comment in comments %}
-            <div style="padding-left:{{ comment.getDepth()*30 }}px" id="{{ comment.id }}" class="m-1 border p-3">
+            <div style="margin-left:{{ comment.getDepth()*30}}px !important" id="{{ comment.id }}" class="m-1 border p-3">
 
              <div>{{ comment.author }} {{ comment.posted|date("m/d/Y") }}</div><br>
               <div>{{ comment.text }}
                 <button type="button" class="btn btn-primary btn-sm float-sm-right reply" id="{{ comment.id }}"
                         onClick="showReplyForm(this.id)">Ответить
-                </button></div>
+                </button>
+              </div>
             </div>
         {% endfor %}
     </div>

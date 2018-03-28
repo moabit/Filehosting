@@ -1,4 +1,8 @@
 {% extends "base.twig" %}
 {% block title %}Топ-30 самых скачиваемых файлов{% endblock %}
 {% block content %}
+    {{ files.links|raw }}
+    {% for file in files %}
+        {{ file.original_name }}
+{% endfor %}
 {% endblock %}

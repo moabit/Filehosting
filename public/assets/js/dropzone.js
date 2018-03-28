@@ -13,9 +13,9 @@
     }, false);
 //валидация еще
     input.oninput = function (e) {
-         label.textContent=input.files[0].name;
+        label.textContent=input.files[0].name;
         //  alert(input.files.length);
-       //  alert (input.files[0].size);
+        //  alert (input.files[0].size);
     };
     dropzone.ondrop = function (e) {
         e.preventDefault();
@@ -24,7 +24,7 @@
     };
 
     dropzone.ondragover = function () {
-        this.className += 'dropzone.dragover';
+        dropzone.style="background-color:dark";
         return false;
     };
 

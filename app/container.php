@@ -6,7 +6,8 @@ use Slim\Container;
 
 // Eloquent ORM
 $capsule = new \Illuminate\Database\Capsule\Manager;
-$capsule->addConnection($container['settings']['db']);
+$capsule->addConnection($container['settings']['db']); // primary db
+$capsule->addConnection($container['settings']['sphinx'], 'sphinxSearch'); // sphinx search
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 $container['db'] = function () use ($capsule) {
@@ -53,3 +54,6 @@ $container['uploaderAuth'] = function (Container $c): \Filehosting\Auth\Uploader
     return new \Filehosting\Auth\UploaderAuth ($c);
 };
 
+$container['search'] = function (Container $c): \Filehosting\Helpers\SphinxSearchGateway {
+    return new \Filehosting\Helpers\SphinxSearchGateway($c['db']->connection('sphinxSearch'));
+};

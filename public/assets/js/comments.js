@@ -15,7 +15,7 @@ function addComment(e, buttonId) {
             var depth = comment.matpath.split('.').length;
             var div = document.createElement("div");
             var date = new Date();
-            div.style.paddingLeft = depth * 30 + 'px';
+            div.style = 'margin-left: '+(depth*30)+'px'+ ' !important';
             div.innerHTML = "<hr>" + comment.author + date + "<br>" + comment.text + "<hr>";
             if (depth == 1) { //root
                 var comments = document.getElementById('commentBlock');
@@ -33,7 +33,7 @@ function addComment(e, buttonId) {
 }
 
 function showReplyForm(id) {
-    var oldReplyForm = document.getElementById('opened');
+    var oldReplyForm = document.getElementById('replyForm');
     if (oldReplyForm) {
 
         oldReplyForm.parentNode.removeChild(oldReplyForm);
