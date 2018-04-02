@@ -7,41 +7,57 @@ use Slim\Http\{
 };
 
 use Filehosting\Models\File;
-use Illuminate\Support\Facades\DB;
+use Filehosting\Helpers\SearchViewParams;
 
 
 class SearchController extends Controller
 {
+    /**
+     * SearchController constructor.
+     * @param \Slim\Container $container
+     */
     public function __construct(\Slim\Container $container)
     {
         parent::__construct($container);
     }
 
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
     public function index(Request $request, Response $response, array $args = []):Response
     {
-        $currentPage = isset($userData['page']) ? $userData['page'] : 1;
-        $files=File::offset(10)->limit(5)->orderBy('download_counter');
+        $params = $request->getQueryParams();
+        if ($params['match'] == null) {
+            return $response->withRedirect('/');
+        }
 
-       $test= $this->container['search']->select('*')->from ('index_files');
+        $currentPage = isset($params['page']) ? intval($params['page']) : 1;
+        $limit = 15; // search results on a single page
+        $offset = ($currentPage - 1) * $limit;
+        $search=$this->container['sphinxSearch']->search($params['match'], $offset, $limit);
+        $files=$this->getSearchedFiles($search);
 
-        return $response->write(var_dump ($test));
+        $viewParams= new SearchViewParams($params, $files);
 
-
-        $csrfNameKey = $this->container['csrf']->getTokenNameKey();
-        $csrfValueKey = $this->container['csrf']->getTokenValueKey();
-        $csrfName = $request->getAttribute($csrfNameKey);
-        $csrfValue = $request->getAttribute($csrfValueKey);
-      //  return $this->container['twig']->render($response, 'search.twig', ['csrfNameKey' => $csrfNameKey,
-     //       'csrfValueKey' => $csrfValueKey,
-     //       'csrfName' => $csrfName,
-     //       'csrfValue' => $csrfValue,
-     //       'files'=>$files]);
-
+        return $this->container['twig']->render($response, 'search.twig',['viewParams'=> $viewParams]);
     }
 
-    public function search (Request $request, Response $response, array $args = []): Response
+    /**
+     * @param array $searchResults
+     * @return bool
+     */
+    private function getSearchedFiles(array $searchResults)
     {
-
-           var_dump($test);
+        if (empty($searchResults)) {
+            return false;
+        }
+        return File::whereIn('id', $searchResults)->get();
     }
+
+
+
+
 }

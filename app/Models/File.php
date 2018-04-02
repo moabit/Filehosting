@@ -22,5 +22,4 @@ class File extends Model
         $comments=$this->comments()->orderBy('matpath')->get();
         return $comments;
     }
-
 }

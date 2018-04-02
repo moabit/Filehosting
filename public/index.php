@@ -3,6 +3,8 @@
 session_start();
 require '../vendor/autoload.php';
 
+
+
 // Configuration
 $config = Filehosting\Helpers\Util::readJSON(__DIR__ . '/../config.json');
 // DI Container

@@ -5,6 +5,7 @@ namespace Filehosting\Controllers;
 use Slim\Http\{
     Request, Response
 };
+use \Illuminate\Database\Capsule\Manager as DB;
 use Filehosting\Exceptions\FileUploadException;
 use Filehosting\Models\File;
 use Filehosting\Helpers\Util;
@@ -73,6 +74,7 @@ class HomeController extends Controller
             throw new $e;
         }
         $this->container['db']->getConnection()->getPDO()->commit();
+        $this->container['sphinxSearch']->indexFile($model->id, $model->original_name);
         $response = $response->withRedirect('file/' . $model->id);
         return $response = $this->container['uploaderAuth']->setUploaderToken($model->id, $uploaderToken, $response);
 

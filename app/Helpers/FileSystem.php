@@ -51,7 +51,7 @@ class FileSystem
      * @param \Filehosting\Models\File $model
      * @throws FileSystemException
      */
-    public function moveUploadedFileToStorage(\Slim\Http\UploadedFile $file, \Filehosting\Models\File $model): void
+    public function moveUploadedFileToStorage(\Slim\Http\UploadedFile $file, \Filehosting\Models\File $model) //void
     {
         $storageName=$this->generateStorageFilename($model);
         $file->moveTo("{$this->generatePathToStorage()}/{$storageName}");

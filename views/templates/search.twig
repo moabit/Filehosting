@@ -1,8 +1,19 @@
 {% extends "base.twig" %}
 {% block title %}Топ-30 самых скачиваемых файлов{% endblock %}
 {% block content %}
-    {{ files.links|raw }}
-    {% for file in files %}
-        {{ file.original_name }}
-{% endfor %}
+    <div class="card mt-3 p-5">
+        <div class="card-body">
+            {% if viewParams.isSearchSuccessful () %}
+            <h1>Результаты поиска по запросу: {{ viewParams.params['match'] }} </h1>
+            <h2>Найдено файлов:{{ viewParams.getFilesFound }} </h2>
+        </div>
+    </div>
+    {% for file in viewParams.files %}
+        <div class="card mt-3 p-5">
+            <div class="card-body">
+                <h1>{{file.original_name}}</h1>
+            </div>
+        </div>
+    {% endfor %}
+    {% endif %}
 {% endblock %}
