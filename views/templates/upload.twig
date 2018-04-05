@@ -1,0 +1,36 @@
+{% extends "base.twig" %}
+{% block title %} Анонимный Файлообменник {% endblock %}
+{% block content %}
+    <div class="card text-center mt-4" id="dropzone">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <div class="alert alert-danger" role="alert">
+                        This is a danger alert—check it out!
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 offset-sm-4">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="{{ csrfNameKey }}" value="{{ csrfName }}">
+                        <input type="hidden" name="{{ csrfValueKey }}" value="{{ csrfValue }}">
+                        <input type="file" hidden required name="userFile" class="custom-file-input" id="inputFileUpload">
+                        <label class="btn btn-primary  btn-block  mt-5" for="inputFileUpload" id="labelUpload">Выберите файл</label>
+                        <input type="submit"  class="btn btn-primary  btn-block  mb-4" id="submitFileUploadButton" value="Загрузить">
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col mb-5">
+                    <span class="badge badge-primary">Вы можете перетащить файл</span>
+                    <span class="badge badge-primary">Размер файла не более 200 МБ</span>
+                    <span class="badge badge-primary">Срок хранения - 60 дней</span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="/assets/js/dropzone.js"></script>
+{% endblock %}

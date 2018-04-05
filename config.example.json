@@ -1,0 +1,16 @@
+{
+  "settings": {
+    "displayErrorDetails":true,
+    "addContentLengthHeader": true,
+    "db": {
+      "driver":"mysql",
+      "host": "localhost",
+      "database" : "filehosting",
+      "username" : "root",
+      "password" : "1234",
+      "charset"  : "utf8mb4",
+      "collation" : "utf8_unicode_ci",
+      "prefix"    : ""
+    }
+  }
+}
