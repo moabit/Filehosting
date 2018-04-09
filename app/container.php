@@ -66,6 +66,9 @@ $container['sphinxSearch'] = function (): \Filehosting\Helpers\SphinxSearch {
 $container['commentValidator'] = function (Container $c): \Filehosting\Validators\CommentValidator {
     return new \Filehosting\Validators\CommentValidator;
 };
+$container['fileValidator'] = function (Container $c): \Filehosting\Validators\FileValidator {
+    return new \Filehosting\Validators\FileValidator;
+};
 // UploaderAuth
 $container['uploaderAuth'] = function (Container $c): \Filehosting\Auth\UploaderAuth {
     return new \Filehosting\Auth\UploaderAuth ($c);

@@ -8,7 +8,7 @@ use Filehosting\Exceptions\ConfigException;
 
 class Util
 {
-    public static function readJSON($JSONpath): array
+    public static function readJSON($JSONpath):array
     {
         if (!file_exists($JSONpath)) {
             throw new ConfigException('Файл конфигурации не существует');
@@ -21,12 +21,12 @@ class Util
         return $fileContent;
     }
 
-    public static function generateToken(int $length = 16): string
+    public static function generateToken ($length = 16)
     {
         return $token = bin2hex(random_bytes($length));
     }
 
-    public static function normalizeFilename(string $filename): string
+    public static function normalizeFilename( $filename)
     {
         if (mb_strlen($filename) > 150) {
             preg_match('/\.[^\.]+$/i', $filename, $extension);
@@ -37,14 +37,14 @@ class Util
 
     }
 
-    public static function generateSafeFilename (string $normalizedFilename): string
+    public static function generateSafeFilename (string $normalizedFilename)
     {
         $safeName= transliterator_transliterate('Any-Latin; Latin-ASCII', $normalizedFilename);
         $safeName=self::normalizeFilename($safeName);
         return  preg_replace('/.(htaccess|php|html|phtml)$/', '.txt', $safeName);
     }
 
-    public static function getFileExtension (string $filename) :string
+    public static function getFileExtension (string $filename)
     {
         preg_match('/\.[^\.]+$/i', $filename, $extension);
         return $extension[0];
