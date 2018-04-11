@@ -52,6 +52,7 @@ class HomeController extends Controller
      */
     public function uploadFile(Request $request, Response $response, array $args = []): Response
     {
+
         $file = $request->getUploadedFiles()['userFile'];
         if (!$file) {
             throw new FileUploadException('Файл отсутствует');
@@ -67,16 +68,18 @@ class HomeController extends Controller
                 'safe_name' => Util::generateSafeFilename($fileName),
                 'size' => $file->getSize(),
                 'uploader_token' => $uploaderToken]);
+
             $this->container['fileSystem']->moveUploadedFileToStorage($file, $model);
 
         } catch (\Exception $e) {
             $this->container['db']->getConnection()->getPDO()->rollback();
             throw new $e;
-        }
+       }
         $this->container['db']->getConnection()->getPDO()->commit();
         $this->container['sphinxSearch']->indexFile($model->id, $model->original_name);
         $response = $response->withRedirect('file/' . $model->id);
         return $response = $this->container['uploaderAuth']->setUploaderToken($model->id, $uploaderToken, $response);
+
 
     }
 }

@@ -6,7 +6,7 @@ use \Illuminate\Database\Capsule\Manager as DB;
 
 class SphinxSearch
 {
-    public function search ($match, $offset, $limit)
+    public function search ($match, $offset, $limit):array
     {
         $search = DB::connection('sphinxSearch')
             ->select('SELECT id FROM index_files, rt_files
@@ -24,19 +24,14 @@ class SphinxSearch
         return $output;
     }
 
-    public function countMatches ($match)
-    {
-        return DB::connection('sphinxSearch')->select('COUNT(*) FROM index_files, rt_files WHERE MATCH(:match)', ['match'=>$match]);
-    }
-
     public function indexFile (int $fileId, string $fileOriginalName) // void
     {
-        DB::connection('sphinxSearch')->select('INSERT INTO rt_files VALUES(:fileId, :fileOriginalName, 1)',
+        DB::connection('sphinxSearch')->insert('INSERT INTO rt_files (id, original_name) VALUES(:fileId, :fileOriginalName)',
             ['fileId'=>$fileId,'fileOriginalName'=>$fileOriginalName]);
     }
 
-    public function deleteIndexedFile (int $fileId):void
+    public function deleteIndexedFile (int $fileId) // void
     {
-        DB::connection('sphinxSearch')->select('DELETE FROM rt_files WHERE id = :fileId',['fileId'=>$fileId]);
+        DB::connection('sphinxSearch')->delete('DELETE FROM rt_files WHERE id = :fileId',['fileId'=>$fileId]);
     }
 }

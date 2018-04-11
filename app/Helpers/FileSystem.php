@@ -15,7 +15,7 @@ class FileSystem
     /**
      * @var mixed
      */
-    protected $baseDir;
+    protected $rootDir;
 
     /**
      * FileSystem constructor.
@@ -24,7 +24,7 @@ class FileSystem
     public function __construct(string $initDir)
     {
 
-        $this->baseDir = str_replace(DIRECTORY_SEPARATOR . "app", "", $initDir);
+        $this->rootDir = str_replace(DIRECTORY_SEPARATOR . "app", "", $initDir);
     }
 
     /**
@@ -32,7 +32,7 @@ class FileSystem
      */
     public function getRootDir(): string
     {
-        return $this->baseDir;
+        return $this->rootDir;
     }
 
     /**
@@ -43,7 +43,11 @@ class FileSystem
     {
         $uploadDate = new \DateTime ($file->upload_date);
         $uploadDate = $uploadDate->format('d-M-Y');
-        return "{$this->getRootDir()}/storage/{$uploadDate}/{$file->id}_{$file->safe_name}";
+        $path="{$this->rootDir}/storage/{$uploadDate}/{$file->id}_{$file->safe_name}";
+        if (!file_exists($path)) {
+            throw new FileSystemException('Файл отсутствует в хранилище');
+        }
+        return $path;
     }
 
     /**
@@ -54,7 +58,8 @@ class FileSystem
     public function moveUploadedFileToStorage(\Slim\Http\UploadedFile $file, \Filehosting\Models\File $model) //void
     {
         $storageName=$this->generateStorageFilename($model);
-        $file->moveTo("{$this->generatePathToStorage()}/{$storageName}");
+        $path="{$this->generatePathToStorage()}/{$storageName}";
+        $file->moveTo($path);
     }
 
     /**
@@ -65,7 +70,7 @@ class FileSystem
     {
         $timestamp = new \DateTime ('now');
         $date = $timestamp->format('d-M-Y');
-        $path="{$this->getRootDir()}/storage/{$date}";
+        $path="{$this->rootDir}/storage/{$date}";
         if (!is_dir($path)) {
             if (!mkdir($path, 0777, true)) {
                 throw new FileSystemException('Не удалось создать директорию');
@@ -78,9 +83,9 @@ class FileSystem
      * @param \Filehosting\Models\File $model
      * @return string
      */
-    private function generateStorageFilename(\Filehosting\Models\File $model): string
+    private function generateStorageFilename(\Filehosting\Models\File $file): string
     {
-        return "{$model->id}_{$model->safe_name}";
+        return "{$file->id}_{$file->safe_name}";
     }
 
 }

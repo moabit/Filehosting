@@ -16,8 +16,4 @@ class Comment extends Model
     protected $fillable = ['file_id','parent_id', 'author', 'text'];
 
 
-
-
-
-
 }
