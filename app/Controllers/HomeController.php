@@ -54,12 +54,7 @@ class HomeController extends Controller
     {
 
         $file = $request->getUploadedFiles()['userFile'];
-        if (!$file) {
-            throw new FileUploadException('Файл отсутствует');
-        }
-        if ($file->getError() !== UPLOAD_ERR_OK) {
-            throw new FileUploadException('Не удалось загрузить файл. Ошибка: ' . $file->getError());
-        }
+        $this->container['uploadedFileValidator']->validate($file);
         try {
             $this->container['db']->getConnection()->getPDO()->beginTransaction();
             $fileName = Util::normalizeFilename($file->getClientFilename());

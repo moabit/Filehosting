@@ -66,8 +66,8 @@ $container['sphinxSearch'] = function (): \Filehosting\Helpers\SphinxSearch {
 $container['commentValidator'] = function (Container $c): \Filehosting\Validators\CommentValidator {
     return new \Filehosting\Validators\CommentValidator;
 };
-$container['fileValidator'] = function (Container $c): \Filehosting\Validators\FileValidator {
-    return new \Filehosting\Validators\FileValidator;
+$container['uploadedFileValidator'] = function (Container $c): \Filehosting\Validators\UploadedFileValidator {
+    return new \Filehosting\Validators\UploadedFileValidator($c['settings']['uploadedFileSizeLimit']);
 };
 // UploaderAuth
 $container['uploaderAuth'] = function (Container $c): \Filehosting\Auth\UploaderAuth {
