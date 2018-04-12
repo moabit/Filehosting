@@ -104,7 +104,7 @@ class DownloadController extends Controller
         return $response->write('удолил');
     }
 
-    public function addComment(Request $request, Response $response, array $args = [])
+    public function addComment(Request $request, Response $response, array $args = []):Response
     {
 
         $file = File::find(intval($args['id']));
@@ -119,10 +119,23 @@ class DownloadController extends Controller
         } else {
             $comment->makeChild();
         }
+        $erros=$this->container['commentValidator']->validate($comment);
+        if (empty($erros)){
         $comment->save();
         if ($request->isXhr()) {
             return $response->withJson($comment);
         }
-        return $response->withRedirect($request->getUri());
+        return $response->withRedirect($request->getUri());}
+        else {
+            return $this->container['twig']->render($response, 'download.twig', ['csrfNameKey' => $csrfNameKey,
+                'csrfValueKey' => $csrfValueKey,
+                'csrfName' => $csrfName,
+                'csrfValue' => $csrfValue,
+                'file' => $file,
+                'link' => $link,
+                'comments' => $comments,
+                'errors' => $errors
+            ]);
+        }
     }
 }
