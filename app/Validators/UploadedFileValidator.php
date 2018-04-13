@@ -5,7 +5,7 @@ namespace Filehosting\Validators;
 
 use Filehosting\Exceptions\FileUploadException;
 
-class UploadedFileValidator extends Validator
+class UploadedFileValidator
 {
     public $fileSizeLimit;
     public function __construct (int $fileSizeLimit)

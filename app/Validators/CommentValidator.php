@@ -3,8 +3,9 @@
 
 namespace Filehosting\Validators;
 
+use Filehosting\Exceptions\CommentAdditionException;
 
-class CommentValidator extends Validator
+class CommentValidator
 {
     public function validate (\Filehosting\Models\Comment $comment) :array
     {
@@ -17,11 +18,11 @@ class CommentValidator extends Validator
         }
 
         if (!($comment->parent_id==null || (is_int($comment->parent_id)&& $comment->parent_id>0 ))) {
-            throw new \Exception('Неправильный формат parent id');
+            throw new CommentAdditionException('Неправильный формат parent id');
         }
 
         if(!preg_match('/^[0-9]{3}(.[0-9]{3})*$/',$comment->matpath)) {
-            throw new \Exception('Неправильный формат matpath');
+            throw new CommentAdditionException('Неправильный формат matpath');
         }
         return $errors;
     }

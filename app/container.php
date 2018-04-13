@@ -2,7 +2,7 @@
 
 use Slim\Container;
 
-// Error Handlers
+//                                               Error Handlers
 // $container['errorHandler'] = function (Container $c):callable {
 //    return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $e) use ($c):\Slim\Http\Response  {
 //        $response = $response->withStatus(500);
@@ -16,7 +16,7 @@ use Slim\Container;
  //   };
 //};
 
-// Dependencies
+//                                                Dependencies
 
 // Eloquent ORM
 $capsule = new \Illuminate\Database\Capsule\Manager;
