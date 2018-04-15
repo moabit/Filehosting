@@ -121,11 +121,7 @@ class DownloadController extends Controller
         $parentId = intval($request->getParam('parentId'));
         $comment = new Comment ();
         $comment->fill(['file_id' => $file->id, 'text' => $commentText, 'author' => $commentAuthor, 'parent_id' => $parentId]);
-        if ($comment->parent_id == null) {
-            $comment->makeRoot();
-        } else {
-            $comment->makeChild();
-        }
+        $comment->generateMatpath ();
         $errors=$this->container['commentValidator']->validate($comment);
         if (empty($errors)){
         $comment->save();

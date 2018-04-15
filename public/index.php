@@ -9,6 +9,11 @@ require '../vendor/autoload.php';
 $config = Filehosting\Helpers\Util::readJSON(__DIR__ . '/../config.json');
 // DI Container
 $container = new Slim\Container ($config);
+
+// File upload limits
+ini_set('upload_max_filesize', $config['settings']['uploadedFileSizeLimit']);
+ini_set('max_file_uploads', 1);
+
 require '../app/container.php';
 // Slim app instance
 $app = new \Slim\App($container);
