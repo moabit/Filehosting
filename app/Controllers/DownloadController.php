@@ -2,6 +2,7 @@
 
 namespace Filehosting\Controllers;
 
+use Filehosting\Exceptions\CommentAdditionException;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Filehosting\Models\{
@@ -41,18 +42,21 @@ class DownloadController extends Controller
             return $response->withStatus(404);
         }
         $comments = $file->getSortedComments();
+        $commentsAllowed=true;
+        if ($file->countRootComments()>998) {
+            $commentsAllowed=false;
+        }
+        return $response->write(intval($anzahl));
         $this->container['uploaderAuth']->checkUploaderToken($file, $request);
-        //var_dump($request->getAttribute('routeInfo')[2])['id'];
         $link = $request->getUri();
-        //  var_dump($this->container['uploaderAuth']->isAuth($request));
-
         return $this->container['twig']->render($response, 'download.twig', ['csrfNameKey' => $csrfNameKey,
             'csrfValueKey' => $csrfValueKey,
             'csrfName' => $csrfName,
             'csrfValue' => $csrfValue,
             'file' => $file,
             'link' => $link,
-            'comments' => $comments
+            'comments' => $comments,
+            'commentsAllowed'=> $commentsAllowed
         ]);
     }
 
@@ -108,25 +112,24 @@ class DownloadController extends Controller
     {
 
         $file = File::find(intval($args['id']));
+        if ($file->countRootComments()>998) {
+            throw new CommentAdditionException('Комментарии закрыты');
+        }
         // Parses POST-vars
         $commentAuthor = $request->getParam('author');
         $commentText = $request->getParam('comment');
         $parentId = intval($request->getParam('parentId'));
         $comment = new Comment ();
         $comment->fill(['file_id' => $file->id, 'text' => $commentText, 'author' => $commentAuthor, 'parent_id' => $parentId]);
-        if ($comment->parent_id == null) {
-            $comment->makeRoot();
-        } else {
-            $comment->makeChild();
-        }
-        $erros=$this->container['commentValidator']->validate($comment);
-        if (empty($erros)){
+        $comment->generateMatpath ();
+        $errors=$this->container['commentValidator']->validate($comment);
+        if (empty($errors)){
         $comment->save();
         if ($request->isXhr()) {
             return $response->withJson($comment);
         }
         return $response->withRedirect($request->getUri());}
-        else {
+        else { //тут трешак в коде
             return $this->container['twig']->render($response, 'download.twig', ['csrfNameKey' => $csrfNameKey,
                 'csrfValueKey' => $csrfValueKey,
                 'csrfName' => $csrfName,

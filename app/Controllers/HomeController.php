@@ -62,19 +62,19 @@ class HomeController extends Controller
             $model = File::create(['original_name' => $fileName,
                 'safe_name' => Util::generateSafeFilename($fileName),
                 'size' => $file->getSize(),
-                'uploader_token' => $uploaderToken]);
-
+                'uploader_token' => $uploaderToken,
+                'media_type'=> $file->getClientMediaType()]);
             $this->container['fileSystem']->moveUploadedFileToStorage($file, $model);
-
+            $path=$this->container['fileSystem']->getAbsolutePathToFile($model);
+            $model->info=json_encode($this->container['getID3']->analyze($path));
+            $model->save();
         } catch (\Exception $e) {
             $this->container['db']->getConnection()->getPDO()->rollback();
             throw new $e;
-       }
+        }
         $this->container['db']->getConnection()->getPDO()->commit();
         $this->container['sphinxSearch']->indexFile($model->id, $model->original_name);
         $response = $response->withRedirect('file/' . $model->id);
         return $response = $this->container['uploaderAuth']->setUploaderToken($model->id, $uploaderToken, $response);
-
-
     }
 }
