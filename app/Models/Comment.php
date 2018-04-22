@@ -51,7 +51,7 @@ class Comment extends Model
         }
     }
 
-    private function getExplodedMatpath(string $matpath): array
+    public function getExplodedMatpath(string $matpath): array
     {
         return explode('.', $matpath);
 

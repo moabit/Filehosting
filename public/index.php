@@ -31,6 +31,6 @@ $app->post('/file/{id}', 'DownloadController:addComment');
 $app->get('/search', 'SearchController:index');
 
 // Route for file uploader
-$app->get('/delete/file/{id}', 'DownloadController:deleteFile')->add(new Filehosting\Middlewares\UploaderAuthMiddleware($container));
+$app->get('/delete/file/{id}', 'DownloadController:deleteFile')->add(new Filehosting\Middlewares\UploaderAuthMiddleware($container['uploaderAuth']));
 
 $app->run();
