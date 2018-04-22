@@ -2,19 +2,24 @@
 
 
 namespace Filehosting\Middlewares;
+use Filehosting\Auth\UploaderAuth;
+use Slim\Http\{Request, Response};
 
-
-class UploaderAuthMiddleware extends Middleware
+class UploaderAuthMiddleware
 {
-    public function __construct(\Slim\Container $container)
+    protected $uploaderAuth;
+
+    public function __construct(UploaderAuth $uploaderAuth)
     {
-        parent::__construct($container);
+        $this->uploaderAuth=$uploaderAuth;
     }
-    public function __invoke($request, $response, $next)
+
+    public function __invoke(Request $request, Response $response, callable $next)
     {
-        if (!$this->container['uploaderAuth']->isAuth($request)) {
+        if (!$this->uploaderAuth->isAuth($request)) {
             return $response->withStatus(404)->withHeader('Content-Type', 'text/html')->write('Page not found, FAIL');
         }
+        // убрать write
         $response = $next($request, $response);
         return $response;
     }

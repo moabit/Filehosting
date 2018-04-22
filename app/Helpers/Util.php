@@ -32,9 +32,7 @@ class Util
             preg_match('/\.[^\.]+$/i', $filename, $extension);
             $filename = substr($filename, 0, 150 - mb_strlen($extension[0])) . $extension[0];
         }
-
         return $filename;
-
     }
 
     public static function generateSafeFilename (string $normalizedFilename)
@@ -46,7 +44,7 @@ class Util
 
     public static function getFileExtension (string $filename)
     {
-        preg_match('/\.[^\.]+$/i', $filename, $extension);
-        return $extension[0];
+        preg_match('/.([^\.]+$)/i', $filename, $extension);
+        return $extension[1];
     }
 }

@@ -37,7 +37,7 @@ $container['twig'] = function (Container $c): \Slim\Views\Twig {
     return $twig;
 };
 // Slim CSRF Guard
-$container['csrf'] = function (Container $c): \Slim\Csrf\Guard {
+$container['csrf'] = function (Container $c): \Slim\Csrf\Guard {// persistent token mode switched on in oder to AJAX can run correctly
     return new \Slim\Csrf\Guard('csrf', $storage = null, null, 200, 16, true);
 };
 // GetID3
@@ -47,13 +47,13 @@ $container['getID3'] = function (Container $c): getID3 {
 };
 // Controllers
 $container['HomeController'] = function (Container $c): \Filehosting\Controllers\HomeController {
-    return new \Filehosting\Controllers\HomeController($c);
+    return new \Filehosting\Controllers\HomeController($c['twig'], $c['csrf'], $c['sphinxSearch'], $c['uploaderAuth'], $c['fileSystem'],$c['uploadedFileValidator'], $c['getID3']);
 };
 $container['DownloadController'] = function (Container $c): \Filehosting\Controllers\DownloadController {
-    return new \Filehosting\Controllers\DownloadController($c);
+    return new \Filehosting\Controllers\DownloadController($c['twig'], $c['csrf'],$c['uploaderAuth'], $c['fileSystem'], $c['commentValidator']);
 };
 $container['SearchController'] = function (Container $c): \Filehosting\Controllers\SearchController {
-    return new \Filehosting\Controllers\SearchController($c);
+    return new \Filehosting\Controllers\SearchController($c['twig'], $c['sphinxSearch']);
 };
 // Helpers
 $container['fileSystem'] = function (): \Filehosting\Helpers\FileSystem {
@@ -71,7 +71,7 @@ $container['uploadedFileValidator'] = function (Container $c): \Filehosting\Vali
 };
 // UploaderAuth
 $container['uploaderAuth'] = function (Container $c): \Filehosting\Auth\UploaderAuth {
-    return new \Filehosting\Auth\UploaderAuth ($c);
+    return new \Filehosting\Auth\UploaderAuth ();
 };
 
 

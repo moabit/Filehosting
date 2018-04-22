@@ -14,4 +14,24 @@ class UtilTest extends TestCase
         $this->expectException(ConfigException::class);
         Util::readJSON('/wrongPath/');
     }
+
+    public function testGetFileExtension ()
+    {
+        $testFilename='test.jpg';
+        $this->assertEquals('jpg', Util::getFileExtension ($testFilename));
+        $testFilename='test.png.jpg';
+        $this->assertEquals('jpg', Util::getFileExtension ($testFilename));
+        $testFilename='test';
+        $this->assertNull(Util::getFileExtension ($testFileName));
+    }
+
+    public function testNormalizeFilename ()
+    {
+
+    }
+    public function testGenerateSafeFilename ()
+    {
+
+    }
+
 }
