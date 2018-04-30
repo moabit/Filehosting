@@ -77,6 +77,9 @@ class DownloadController extends Controller
         if ($file->countRootComments() > 998) {
             $commentsAllowed = false;
         }
+        if ($file->isImage()) {
+            $pathToThumbnail=$this->fileSystem->getPathToThumbnail($file);
+        }
         $link = $request->getUri();
         return $this->twig->render($response, 'download.twig', ['csrfNameKey' => $csrfNameKey,
             'csrfValueKey' => $csrfValueKey,
@@ -86,7 +89,8 @@ class DownloadController extends Controller
             'link' => $link,
             'comments' => $comments,
             'commentsAllowed' => $commentsAllowed,
-            'isAuth' => $this->uploaderAuth->isAuth($request)
+            'isAuth' => $this->uploaderAuth->isAuth($request),
+            'pathToThumbnail'=>$pathToThumbnail
         ]);
     }
 

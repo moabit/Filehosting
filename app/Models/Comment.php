@@ -41,7 +41,12 @@ class Comment extends Model
         }
     }
 
-    public function countChildren(string $childMaxMatpath): int //тут какая то дичь, поменять название метода
+    public function getDepth () :int
+    {
+        return count ($this->getExplodedMatpath($this->matpath));
+    }
+
+    private function countChildren(string $childMaxMatpath): int
     {
         $lastpart = $this->getExplodedMatpath($childMaxMatpath);
         if (count($lastpart) == 1) {
@@ -51,7 +56,7 @@ class Comment extends Model
         }
     }
 
-    public function getExplodedMatpath(string $matpath): array
+    private function getExplodedMatpath(string $matpath): array
     {
         return explode('.', $matpath);
 
@@ -62,8 +67,4 @@ class Comment extends Model
         return str_pad($int, 3, '0', STR_PAD_LEFT);
     }
 
-    public function getDepth () :int
-    {
-        return count ($this->getExplodedMatpath($this->matpath));
-    }
 }

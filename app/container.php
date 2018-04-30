@@ -27,6 +27,8 @@ $capsule->bootEloquent();
 $container['db'] = function () use ($capsule) {
     return $capsule;
 };
+
+
 // Twig
 $container['twig'] = function (Container $c): \Slim\Views\Twig {
     $twig = new \Slim\Views\Twig('../views/templates', [
@@ -64,7 +66,7 @@ $container['sphinxSearch'] = function (): \Filehosting\Helpers\SphinxSearch {
 };
 // Validators
 $container['commentValidator'] = function (Container $c): \Filehosting\Validators\CommentValidator {
-    return new \Filehosting\Validators\CommentValidator;
+    return new \Filehosting\Validators\CommentValidator ();
 };
 $container['uploadedFileValidator'] = function (Container $c): \Filehosting\Validators\UploadedFileValidator {
     return new \Filehosting\Validators\UploadedFileValidator($c['settings']['uploadedFileSizeLimit']);

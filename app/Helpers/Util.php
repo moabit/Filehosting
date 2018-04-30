@@ -21,19 +21,12 @@ class Util
         return $fileContent;
     }
 
-    public static function generateToken ($length = 16)
+    public static function generateToken ($length = 16) : string
     {
         return $token = bin2hex(random_bytes($length));
     }
+    // протестить строковые функции
 
-    public static function normalizeFilename( $filename)
-    {
-        if (mb_strlen($filename) > 150) {
-            preg_match('/\.[^\.]+$/i', $filename, $extension);
-            $filename = substr($filename, 0, 150 - mb_strlen($extension[0])) . $extension[0];
-        }
-        return $filename;
-    }
 
     public static function generateSafeFilename (string $normalizedFilename)
     {
@@ -42,8 +35,23 @@ class Util
         return  preg_replace('/.(htaccess|php|html|phtml)$/', '.txt', $safeName);
     }
 
-    public static function getFileExtension (string $filename)
+    public static function normalizeFilename($filename)
     {
+        $ext=self::getFileExtension($filename);
+        if (mb_strlen($ext)>10) {
+            $filename = substr($filename, 0, 150);
+        }
+        elseif (mb_strlen($filename) > 150) {
+            $filename = substr($filename, 0, 150 - (mb_strlen($ext)+1)) . '.' . $ext;
+        }
+        return $filename;
+    }
+
+    private static function getFileExtension (string $filename)
+    {
+        if (!strpos($filename, '.')){
+            return '';
+        }
         preg_match('/.([^\.]+$)/i', $filename, $extension);
         return $extension[1];
     }

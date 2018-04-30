@@ -9,29 +9,31 @@ class UtilTest extends TestCase
     {
         $this->assertEquals(['test' => 'test'], Util::readJSON(__DIR__ . '/resources/test.json'));
     }
+
     public function testReadJSONwithWrongPath()
     {
         $this->expectException(ConfigException::class);
         Util::readJSON('/wrongPath/');
     }
 
-    public function testGetFileExtension ()
-    {
-        $testFilename='test.jpg';
-        $this->assertEquals('jpg', Util::getFileExtension ($testFilename));
-        $testFilename='test.png.jpg';
-        $this->assertEquals('jpg', Util::getFileExtension ($testFilename));
-        $testFilename='test';
-        $this->assertNull(Util::getFileExtension ($testFileName));
-    }
-
     public function testNormalizeFilename ()
     {
-
+        $filename='test.jpg';
+        $this->assertEquals($filename, Util::normalizeFilename($filename));
+        $filename=str_repeat('a',160).'.jpg';
+        $normalizedFilename=Util::normalizeFilename($filename);
+        $this->assertTrue (mb_strlen($normalizedFilename)==150);
+        $this->assertStringEndsWith('.jpg', $normalizedFilename);
     }
+
     public function testGenerateSafeFilename ()
     {
-
+        $filename='test.php';
+        $this->assertEquals('test.txt', Util::generateSafeFilename($filename));
+        $filename='тест.html';
+        $this->assertEquals('test.txt', Util::generateSafeFilename($filename));
+        $filename='test.jpg';
+        $this->assertEquals('test.jpg', Util::generateSafeFilename($filename));
     }
 
 }

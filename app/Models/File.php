@@ -31,12 +31,7 @@ class File extends Model
 
     public function isImage(): bool
     {
-        $imageTypes = array(
-            'image/gif',
-            'image/jpeg',
-            'image/png',
-            'image/bmp'
-        );
+        $imageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/bmp'];
         if (in_array($this->media_type, $imageTypes)) {
             return true;
         }
@@ -44,12 +39,7 @@ class File extends Model
     }
     public function isAudio(): bool
     {
-        $audioTypes = array(
-            'audio/mp3',
-            'audio/mpeg',
-            'audio/ogg',
-            'audio/wav'
-        );
+        $audioTypes = ['audio/mp3', 'audio/mpeg', 'audio/ogg', 'audio/wav'];
         if (in_array($this->media_type, $audioTypes)) {
             return true;
         }
@@ -57,11 +47,7 @@ class File extends Model
     }
     public function isVideo():bool
     {
-        $audioTypes = array(
-            'video/mp4',
-            'video/webm',
-            'video/ogg'
-        );
+        $audioTypes = ['video/mp4', 'video/webm', 'video/ogg'];
         if (in_array($this->media_type, $audioTypes)) {
             return true;
         }

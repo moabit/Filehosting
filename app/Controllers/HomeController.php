@@ -98,7 +98,8 @@ class HomeController extends Controller
     {
         $file = $request->getUploadedFiles()['userFile'];
         $this->uploadedFileValidator->validate($file);
-        try {
+        // проверить есть ли файл или
+       try {
             DB::beginTransaction();
             $fileName = Util::normalizeFilename($file->getClientFilename());
             $uploaderToken = Util::generateToken();
@@ -110,8 +111,11 @@ class HomeController extends Controller
             $this->fileSystem->moveUploadedFileToStorage($file, $model);
             $path = $this->fileSystem->getAbsolutePathToFile($model);
             $model->info = json_encode($this->getID3->analyze($path));
+           if ($model->isImage ()) {
+          $this->fileSystem->generateThumbnail($model, $path);
+            }
             $model->save();
-        } catch (\Exception $e) {
+       } catch (\Exception $e) {
             DB::rollback();
             throw new $e;
         }

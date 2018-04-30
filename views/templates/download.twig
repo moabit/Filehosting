@@ -10,6 +10,10 @@
                     <a href="/file/{{ file.id }}/{{ file.original_name }}" class="btn btn-primary btn-lg ml-5">Скачать
                         файл</a>
                 </div>
+                {% if file.isImage () %}
+                    <img src="var/www/filehosting/app/storage/30-Apr-2018/thumbnail_77_15249575965990.jpg">
+                    <h1>{{ pathToThumbnail }}</h1>
+                {% endif %}
                 <div class="col-8">
                     <table class="table table-bordered text-center">
                         <thead>

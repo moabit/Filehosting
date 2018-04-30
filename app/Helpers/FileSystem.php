@@ -15,7 +15,7 @@ class FileSystem
     /**
      * @var mixed
      */
-    protected $rootDir;
+    public $rootDir;
 
     /**
      * FileSystem constructor.
@@ -28,25 +28,15 @@ class FileSystem
     }
 
     /**
-     * @return string
-     */
-    public function getRootDir(): string
-    {
-        return $this->rootDir;
-    }
-
-    /**
      * @param \Filehosting\Models\File $file
      * @return string
      */
     public function getAbsolutePathToFile(\Filehosting\Models\File $file): string
     {
-        $uploadDate = new \DateTime ($file->upload_date);
-        $uploadDate = $uploadDate->format('d-M-Y');
-        $path="{$this->rootDir}/storage/{$uploadDate}/{$file->id}_{$file->safe_name}";
+        $path = "{$this->generatePathToStorage($file->uploaded)}/{$this->generateStorageFilename($file)}";
         if (!file_exists($path)) {
-            throw new FileSystemException('Файл отсутствует в хранилище');
-        }
+           throw new FileSystemException('Файл отсутствует в хранилище');
+       }
         return $path;
     }
 
@@ -57,20 +47,49 @@ class FileSystem
      */
     public function moveUploadedFileToStorage(\Slim\Http\UploadedFile $file, \Filehosting\Models\File $model) //void
     {
-        $storageName=$this->generateStorageFilename($model);
-        $path="{$this->generatePathToStorage()}/{$storageName}";
+        $storageName = $this->generateStorageFilename($model);
+        $path = "{$this->generatePathToStorage()}/{$storageName}";
         $file->moveTo($path);
     }
 
+    public function generateThumbnail(\Filehosting\Models\File $image, string $absolutePathToImage) // void
+    {
+        if (!$image->isImage()) {
+            throw new FileSystemException('Файл не является изображением');
+        }
+        $thumbnail = new \Imagick ($absolutePathToImage);
+        $thumbnail->thumbnailImage(200, 0);
+        $path = "{$this->generatePathToStorage($image->uploaded)}/thumbnail_{$image->id}_{$image->safe_name}";
+        $thumbnail->writeImage($path);
+    }
+
+    public function getPathToThumbnail(\Filehosting\Models\File $image): string
+    {
+        if (!($image->isImage())) {
+            throw new FileSystemException('Файл не является изображением');
+        }
+        $path = "{$this->generatePathToStorage($image->uploaded)}/{$this->generateStorageThumbnailName ($image)}";
+        if (!file_exists($path)) {
+            throw new FileSystemException('Картинка для предпросмотра отсутствует в хранилище');
+        }
+        return $path;
+    }
+
     /**
+     * Throws FileSystemException if a directory wasn't createad
      * @return string
      * @throws FileSystemException
      */
-    public function generatePathToStorage(): string
+    private function generatePathToStorage($date = null): string
     {
-        $timestamp = new \DateTime ('now');
-        $date = $timestamp->format('d-M-Y');
-        $path="{$this->rootDir}/storage/{$date}";
+        if ($date) {
+            $uploadDate = new \DateTime ($date);
+            $uploadDate = $uploadDate->format('d-M-Y');
+        } else {
+            $timestamp = new \DateTime ('now');
+            $uploadDate= $timestamp->format('d-M-Y');
+        }
+        $path = "{$this->rootDir}/storage/{$uploadDate}";
         if (!is_dir($path)) {
             if (!mkdir($path, 0777, true)) {
                 throw new FileSystemException('Не удалось создать директорию');
@@ -88,4 +107,8 @@ class FileSystem
         return "{$file->id}_{$file->safe_name}";
     }
 
+    private function generateStorageThumbnailName (\Filehosting\Models\File $image) :string
+    {
+        return "thumbnail_{$image->id}_{$image->safe_name}";
+    }
 }

@@ -8,15 +8,14 @@ use Filehosting\Exceptions\FileUploadException;
 class UploadedFileValidator
 {
     public $fileSizeLimit;
+
     public function __construct (int $fileSizeLimit)
     {
         $this->fileSizeLimit=$fileSizeLimit;
     }
+
     public function validate (\Slim\Http\UploadedFile $file) //void
     {
-        if (!$file) {
-            throw new FileUploadException('Файл отсутствует');
-        }
         if ($file->getError() !== UPLOAD_ERR_OK) {
             throw new FileUploadException('Не удалось загрузить файл. Ошибка: ' . $file->getError());
         }
