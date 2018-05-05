@@ -28,6 +28,8 @@ class FileSystem
     }
 
     /**
+     * Returns absolute path to file in the storage
+     * If a file doesn't exist throws FileSystemException
      * @param \Filehosting\Models\File $file
      * @return string
      */
@@ -35,12 +37,13 @@ class FileSystem
     {
         $path = "{$this->generatePathToStorage($file->uploaded)}/{$this->generateStorageFilename($file)}";
         if (!file_exists($path)) {
-           throw new FileSystemException('Файл отсутствует в хранилище');
-       }
+            throw new FileSystemException('Файл отсутствует в хранилище');
+        }
         return $path;
     }
 
     /**
+     * Moves file to the storage
      * @param \Slim\Http\UploadedFile $file
      * @param \Filehosting\Models\File $model
      * @throws FileSystemException
@@ -52,6 +55,12 @@ class FileSystem
         $file->moveTo($path);
     }
 
+    /**
+     * @param \Filehosting\Models\File $image
+     * @param string $absolutePathToImage
+     * @throws FileSystemException
+     * @throws \ImagickException
+     */
     public function generateThumbnail(\Filehosting\Models\File $image, string $absolutePathToImage) // void
     {
         if (!$image->isImage()) {
@@ -63,6 +72,13 @@ class FileSystem
         $thumbnail->writeImage($path);
     }
 
+    /**
+     * Return absolute path to image's thumbnail in the storage
+     * If file is not image or thumbnail doesn't exist throws FileSystemException
+     * @param \Filehosting\Models\File $image
+     * @return string
+     * @throws FileSystemException
+     */
     public function getPathToThumbnail(\Filehosting\Models\File $image): string
     {
         if (!($image->isImage())) {
@@ -76,18 +92,21 @@ class FileSystem
     }
 
     /**
-     * Throws FileSystemException if a directory wasn't createad
+     * Takes timestamp as an argument or uses uses current timestamp by default
+     * Checks if there is a directory with name of the value of a given timestamp in format d-M-Y
+     * If directory is set, returns a path to it and if not creates it
+     * Throws FileSystemException if a directory wasn't createad or doesn't exist
      * @return string
      * @throws FileSystemException
      */
-    private function generatePathToStorage($date = null): string
+    private function generatePathToStorage($uploadDate = null): string
     {
-        if ($date) {
-            $uploadDate = new \DateTime ($date);
+        if ($uploadDate) {
+            $uploadDate = new \DateTime ($uploadDate);
             $uploadDate = $uploadDate->format('d-M-Y');
         } else {
-            $timestamp = new \DateTime ('now');
-            $uploadDate= $timestamp->format('d-M-Y');
+            $uploadDate = new \DateTime ('now');
+            $uploadDate = $uploadDate->format('d-M-Y');
         }
         $path = "{$this->rootDir}/storage/{$uploadDate}";
         if (!is_dir($path)) {
@@ -99,6 +118,7 @@ class FileSystem
     }
 
     /**
+     * Generates storage filename for given file
      * @param \Filehosting\Models\File $model
      * @return string
      */
@@ -107,7 +127,12 @@ class FileSystem
         return "{$file->id}_{$file->safe_name}";
     }
 
-    private function generateStorageThumbnailName (\Filehosting\Models\File $image) :string
+    /**
+     * Generates storage name for thumbnail
+     * @param \Filehosting\Models\File $image
+     * @return string
+     */
+    private function generateStorageThumbnailName(\Filehosting\Models\File $image): string
     {
         return "thumbnail_{$image->id}_{$image->safe_name}";
     }
