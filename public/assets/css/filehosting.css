@@ -5,8 +5,8 @@
     white-space:normal;
     word-wrap:break-word !important;
 }
-.error-message {
-    display:none;
+table
+{
+    table-layout:fixed;
+    width:100%;
 }
-
-

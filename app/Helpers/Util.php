@@ -8,6 +8,14 @@ use Filehosting\Exceptions\ConfigException;
 
 class Util
 {
+    /**
+     * Reads JSON config file and returns array with config settings
+     * If config file doesn't exist or there is an error, throws ConfigException
+     *
+     * @param $JSONpath
+     * @return array
+     * @throws ConfigException
+     */
     public static function readJSON($JSONpath):array
     {
         if (!file_exists($JSONpath)) {
@@ -21,20 +29,39 @@ class Util
         return $fileContent;
     }
 
+    /**
+     * Returns random string token
+     *
+     * @param int $length
+     * @return string
+     */
     public static function generateToken ($length = 16) : string
     {
         return $token = bin2hex(random_bytes($length));
     }
-    // протестить строковые функции
 
-
+    /**
+     * Transliterates filename
+     * If file extension is not safe to store on server, changes it to .txt
+     *
+     * @param string $normalizedFilename
+     * @return null|string|string[]
+     */
     public static function generateSafeFilename (string $normalizedFilename)
     {
         $safeName= transliterator_transliterate('Any-Latin; Latin-ASCII', $normalizedFilename);
+        // normalizes file's name one more time because after transliteration it can contain more characters than allowed
         $safeName=self::normalizeFilename($safeName);
         return  preg_replace('/.(htaccess|php|html|phtml)$/', '.txt', $safeName);
     }
 
+    /**
+     * Checks if a filename contains more than 150 characters
+     * If it does, shortens it
+     *
+     * @param $filename
+     * @return bool|string
+     */
     public static function normalizeFilename($filename)
     {
         $ext=self::getFileExtension($filename);
@@ -47,6 +74,11 @@ class Util
         return $filename;
     }
 
+    /**
+     *
+     * @param string $filename
+     * @return string
+     */
     private static function getFileExtension (string $filename)
     {
         if (!strpos($filename, '.')){

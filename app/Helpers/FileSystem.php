@@ -93,7 +93,7 @@ class FileSystem
 
     /**
      * Takes timestamp as an argument or uses uses current timestamp by default
-     * Checks if there is a directory with name of the value of a given timestamp in format d-M-Y
+     * Checks if there is a directory with the name of the value of a given timestamp in format d-M-Y
      * If directory is set, returns a path to it and if not creates it
      * Throws FileSystemException if a directory wasn't createad or doesn't exist
      * @return string
@@ -118,7 +118,7 @@ class FileSystem
     }
 
     /**
-     * Generates storage filename for given file
+     * Generates a convenient filename to store on server
      * @param \Filehosting\Models\File $model
      * @return string
      */

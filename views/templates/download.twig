@@ -1,17 +1,6 @@
 {% extends "base.twig" %}
 {% block title %} Скачать Файл - {{ file.original_name }} {% endblock %}
 {% block content %}
-    {% if file.isVideo () %}
-        <div class="card mt-3 p-5">
-            <div class="card-body">
-                <div id="file-video-container" style="width: 50%; height: 45%;">
-                    <video id="file-video-player" class="video-js vjs-default-skin vjs-big-play-centered"
-                           controls preload="auto" data-setup="{}">
-                        <source src="/file/{{ file.id }}/{{ file.original_name }}">
-                    </video>
-            </div>
-        </div>
-    {% endif %}
     <div class="card  mt-4">
         <div class="card-body">
             <h4>{{ file.original_name }}</h4><br>
@@ -20,10 +9,6 @@
                     <a href="/file/{{ file.id }}/{{ file.original_name }}" class="btn btn-primary btn-lg ml-5">Скачать
                         файл</a>
                 </div>
-                {% if file.isImage () %}
-                    <img src="var/www/filehosting/app/storage/30-Apr-2018/thumbnail_77_15249575965990.jpg">
-                    <h1>{{ pathToThumbnail }}</h1>
-                {% endif %}
                 <div class="col-8">
                     <table class="table table-bordered text-center">
                         <thead>
@@ -45,23 +30,32 @@
                     </table>
                 </div>
             </div>
-
             <div class="row">
-                <div class="col-4">
-                    <laber for=""> Ссылка</laber>
+                <div class="col-4 mt-2">
+                    <label for=""> Ссылка</label>
                     <input class="form-control" type="text" placeholder="Readonly input here…" value="{{ link }}"
                            readonly>
                 </div>
-            </div>
+                {% if file.isVideo () or file.isAudio () %}
+                <div class="col-8 ">
+                    <div id="file-video-container" class="m-auto" style="width: 50%; height: 50%;">
+                        <video id="file-video-player" class="video-js vjs-default-skin vjs-big-play-centered"
+                               controls preload="auto" data-setup="{}">
+                            <source src="/file/{{ file.id }}/{{ file.original_name }}">
+                        </video>
+                    </div>
+                    {% endif %}
         </div>
     </div>
-    {% include 'comments.twig' %}
+    </div>
+    </div>
+        {% include 'comments.twig' %}
 {% endblock %}
 {% block js %}
-<script src="/assets/js/comments.js"></script>
+    <script src="/assets/js/comments.js"></script>
     <script src="/assets/js/video.min.js"></script>
     <script>
-        var videoPlayer = videojs('file-video-player', { fluid: true, width: 640, height: 360, preload: 'metadata' });
+        var videoPlayer = videojs('file-video-player', {fluid: true, width: 640, height: 360, preload: 'metadata'});
         videojs.options.flash.swf = "/assets/flash/video-js.swf";
     </script>
 {% endblock %}

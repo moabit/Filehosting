@@ -11,7 +11,7 @@ class Comment extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['file_id','parent_id', 'author', 'text'];
+    protected $fillable = ['file_id','parent_id', 'author', 'comment_text'];
 
     public function generateMatpath ()
     {
@@ -22,14 +22,14 @@ class Comment extends Model
         }
     }
 
-    protected function makeRoot(): void
+    protected function makeRoot() // void
     {
-        $maxRootPath = intval($this->where('file_id',$this->file_id)->where('parent_id', null)->get()->max ('matpath'));
+        $maxRootPath = intval($this->where('file_id',$this->file_id)->where('parent_id', null)->get()->max('matpath'));
         $path = $maxRootPath +1;
         $this->matpath = $this->toPath($path);
     }
 
-    protected function makeChild(): void
+    protected function makeChild() // void
     {
         $parentMatpath = $this->whereId($this->parent_id)->value('matpath');
         $childMaxPath = ($this->whereParentId($this->parent_id)->max('matpath'));

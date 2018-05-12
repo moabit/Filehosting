@@ -152,8 +152,8 @@ class DownloadController extends Controller
 
     /**
      *
-     * Adds a comment to the file
-     *
+     * Creates and adds a comment from parsed post-vars
+     *  If there are more than 998 comments throws CommentAdditionException
      * @param Request $request
      * @param Response $response
      * @param array $args
@@ -170,27 +170,26 @@ class DownloadController extends Controller
         // Parses POST-vars
         $commentAuthor = $request->getParam('author');
         $commentText = $request->getParam('comment');
-        $parentId = intval($request->getParam('parentId'));
-        $comment = new Comment ();
-        $comment->fill(['file_id' => $file->id, 'text' => $commentText, 'author' => $commentAuthor, 'parent_id' => $parentId]);
+        $parentId =intval( $request->getParam('parentId'));
+        $comment = new Comment (['file_id' => $file->id, 'comment_text' => $commentText, 'author' => $commentAuthor]);
+        if ($parentId) {
+            $comment->parent_id=$parentId;
+        }
         $comment->generateMatpath();
         $errors = $this->commentValidator->validate($comment);
         if (empty($errors)) {
             $comment->save();
+            $date=new \DateTime('now');
+            $comment->posted=$date->format('m/d/Y');
             if ($request->isXhr()) {
                 return $response->withJson($comment);
             }
             return $response->withRedirect($request->getUri());
-        } else { //тут трешак в коде
-            return $this->twig->render($response, 'download.twig', ['csrfNameKey' => $csrfNameKey,
-                'csrfValueKey' => $csrfValueKey,
-                'csrfName' => $csrfName,
-                'csrfValue' => $csrfValue,
-                'file' => $file,
-                'link' => $link,
-                'comments' => $comments,
-                'errors' => $errors
-            ]);
+        } else {
+            if ($request->isXhr()) {
+                return $response->withJson($errors);
+            }
+            return $response->withRedirect($request->getUri());
         }
     }
 }
