@@ -68,7 +68,7 @@ class FileSystem
         }
         $thumbnail = new \Imagick ($absolutePathToImage);
         $thumbnail->thumbnailImage(200, 0);
-        $path = "{$this->generatePathToStorage($image->uploaded)}/thumbnail_{$image->id}_{$image->safe_name}";
+        $path = "{$this->generateAbsolutePathToThumbnail($image->uploaded)}/{$this->generateStorageFilename($image)}"; // здесь функция
         $thumbnail->writeImage($path);
     }
 
@@ -84,10 +84,9 @@ class FileSystem
         if (!($image->isImage())) {
             throw new FileSystemException('Файл не является изображением');
         }
-        $path = "{$this->generatePathToStorage($image->uploaded)}/{$this->generateStorageThumbnailName ($image)}";
-        if (!file_exists($path)) {
-            throw new FileSystemException('Картинка для предпросмотра отсутствует в хранилище');
-        }
+        $uploadDate=new \DateTime($image->uploaded);
+        $uploadDate = $uploadDate->format('d-M-Y');
+        $path = "/thumbnails/{$uploadDate}/{$this->generateStorageFilename($image)}";
         return $path;
     }
 
@@ -117,6 +116,19 @@ class FileSystem
         return $path;
     }
 
+    private function generateAbsolutePathToThumbnail($uploadDate):string
+    {
+        $uploadDate = new \DateTime ($uploadDate);
+        $uploadDate = $uploadDate->format('d-M-Y');
+        $path="{$this->rootDir}/public/thumbnails/{$uploadDate}";
+        if (!is_dir($path)) {
+            if (!mkdir($path, 0777, true)) {
+                throw new FileSystemException('Не удалось создать директорию');
+            }
+        }
+        return $path;
+    }
+
     /**
      * Generates a convenient filename to store on server
      * @param \Filehosting\Models\File $model
@@ -127,13 +139,4 @@ class FileSystem
         return "{$file->id}_{$file->safe_name}";
     }
 
-    /**
-     * Generates storage name for thumbnail
-     * @param \Filehosting\Models\File $image
-     * @return string
-     */
-    private function generateStorageThumbnailName(\Filehosting\Models\File $image): string
-    {
-        return "thumbnail_{$image->id}_{$image->safe_name}";
-    }
 }

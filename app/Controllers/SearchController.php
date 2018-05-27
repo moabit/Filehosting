@@ -36,12 +36,13 @@ class SearchController extends Controller
             return $response->withRedirect('/');
         }
         $currentPage = isset($params['page']) ? intval($params['page']) : 1;
-        $limit = 15; // search results on a single page
+        $limit = 1; // search results on a single page
         $offset = ($currentPage - 1) * $limit;
-        $search=$this->container['sphinxSearch']->search($params['match'], $offset, $limit);
+        $search=$this->sphinxSearch->search(strval($params['match']), $offset, $limit);
         $files=$this->getSearchedFiles($search);
-        $viewParams= new SearchViewParams($params, $files);
-        return $this->container['twig']->render($response, 'search.twig',['viewParams'=> $viewParams]);
+        $filesFound=$this->sphinxSearch->countSearchResults($params['match']);
+        $viewParams= new SearchViewParams($params, $files,$filesFound);
+        return $this->twig->render($response, 'search.twig',['viewParams'=> $viewParams]);
     }
 
     /**

@@ -15,13 +15,11 @@ class SphinxSearch
         return $this->toArray($search);
     }
 
-    private function toArray ($array)
+    public function countSearchResults (string $match): int
     {
-        $output = [];
-        foreach ($array as $object) {
-            array_push($output, $object->id);
-        }
-        return $output;
+        $count= DB::connection('sphinxSearch')->select('SELECT COUNT(*) FROM index_files, rt_files WHERE MATCH(:match)', ['match' => $match]);
+        $count=json_decode(json_encode($count),True);
+        return $count[0]["count(*)"];
     }
 
     public function indexFile (int $fileId, string $fileOriginalName) // void
@@ -30,8 +28,17 @@ class SphinxSearch
             ['fileId'=>$fileId,'fileOriginalName'=>$fileOriginalName]);
     }
 
-    public function deleteIndexedFile (int $fileId) // void
+    public function deleteIndexedFile (int $fileId)
     {
         DB::connection('sphinxSearch')->delete('DELETE FROM rt_files WHERE id = :fileId',['fileId'=>$fileId]);
+    }
+
+    private function toArray (array $objects): array
+    {
+        $output = [];
+        foreach ($objects as $object) {
+            array_push($output, $object->id);
+        }
+        return $output;
     }
 }

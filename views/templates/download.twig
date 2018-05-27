@@ -45,9 +45,14 @@
                         </video>
                     </div>
                     {% endif %}
+                    {% if file.isImage () %}
+                   <div class="col offset-3">
+                       <img src="{{ pathToThumbnail }}">
+                   </div>
+                    {% endif %}
         </div>
-    </div>
-    </div>
+            </div>
+        </div>
     </div>
         {% include 'comments.twig' %}
 {% endblock %}

@@ -3,9 +3,7 @@
 {% block content %}
     <div class="card text-center mt-4" id="dropzone">
         <div class="card-body">
-                    <ul class="alert alert-danger" id="error-message" hidden>
-                    </ul>
-            <div class="row">
+            <div class="row" id="uploadBlock">
                 <div class="col-sm-4 offset-sm-4">
                     <form action="" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="{{ csrfNameKey }}" value="{{ csrfName }}">

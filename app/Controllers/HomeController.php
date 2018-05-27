@@ -113,15 +113,15 @@ class HomeController extends Controller
             $model->info = json_encode($this->getID3->analyze($path));
            if ($model->isImage ()) {
           $this->fileSystem->generateThumbnail($model, $path);
-            }
+          }
             $model->save();
        } catch (\Exception $e) {
             DB::rollback();
             throw new $e;
         }
         DB::commit();
-        //   $this->sphinxSearch->indexFile($model->id, $model->original_name);
-        $response = $response->withRedirect('file/' . $model->id);
+       $this->sphinxSearch->indexFile($model->id, $model->original_name);
+       $response = $response->withRedirect('file/' . $model->id);
         $response = $this->uploaderAuth->setUploaderToken($uploaderToken, $response, $model->id);
         return $response;
     }

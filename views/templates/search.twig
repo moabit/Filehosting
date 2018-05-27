@@ -1,19 +1,44 @@
 {% extends "base.twig" %}
 {% block title %}Топ-30 самых скачиваемых файлов{% endblock %}
 {% block content %}
-    <div class="card mt-3 p-5">
+    <div class="card mt-3">
         <div class="card-body">
             {% if viewParams.isSearchSuccessful () %}
-            <h1>Результаты поиска по запросу: {{ viewParams.params['match'] }} </h1>
-            <h2>Найдено файлов:{{ viewParams.getFilesFound }} </h2>
+            <h4 class="text-center">Результаты поиска по запросу: {{ viewParams.params['match'] }} </h4>
+            <h4 class="text-center">Найдено файлов:{{ viewParams.getFilesFound }} </h4>
+                {% else %}
+                <h4>по запросу: {{ viewParams.params['match'] }} ничего не найдено</h4>
+                    {% endif %}
         </div>
     </div>
+    {% if viewParams.isSearchSuccessful () %}
     {% for file in viewParams.files %}
-        <div class="card mt-3 p-5">
+        <div class="card mt-3">
             <div class="card-body">
-                <h1>{{file.original_name}}</h1>
+                <h4>{{file.original_name}}</h4>
+
+                    <table class="table table-bordered text-center">
+                        <thead>
+                        <tr>
+                            <th scope="col">Имя</th>
+                            <th scope="col">Размер</th>
+                            <th scope="col">Дата загрузки</th>
+                            <th scope="col">Число скачиваний</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{ file.original_name }}</td>
+                            <td>{{ file.size }}</td>
+                            <td>{{ file.uploaded }}</td>
+                            <td>{{ file.download_counter }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                <a href="/file/{{ file.id }}" class="btn btn-outline-info">скачать</a>
             </div>
         </div>
     {% endfor %}
     {% endif %}
+    {% include 'pagination.twig' %}
 {% endblock %}

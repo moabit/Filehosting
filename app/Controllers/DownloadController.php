@@ -9,7 +9,7 @@ use Slim\Csrf\Guard;
 use Illuminate\Database\Capsule\Manager as DB;
 use Filehosting\Auth\UploaderAuth;
 use Filehosting\Validators\CommentValidator;
-use Filehosting\Helpers\FileSystem;
+use Filehosting\Helpers\{FileSystem, SphinxSearch};
 use Filehosting\Models\{
     File, Comment
 };
@@ -39,17 +39,20 @@ class DownloadController extends Controller
      */
     protected $commentValidator;
 
+    protected $sphinxSearch;
+
     /**
      * DownloadController constructor.
      * @param \Slim\Container $container
      */
-    public function __construct(Twig $twig, Guard $csrf, UploaderAuth $uploaderAuth, FileSystem $fileSystem, CommentValidator $commentValidator)
+    public function __construct(Twig $twig, Guard $csrf, UploaderAuth $uploaderAuth, FileSystem $fileSystem, CommentValidator $commentValidator, SphinxSearch $sphinxSearch)
     {
         parent::__construct($twig);
         $this->csrf = $csrf;
         $this->uploaderAuth = $uploaderAuth;
         $this->fileSystem = $fileSystem;
         $this->commentValidator = $commentValidator;
+        $this->sphinxSearch=$sphinxSearch;
     }
 
     /**
@@ -147,6 +150,7 @@ class DownloadController extends Controller
             throw new $e;
         }
         DB::commit();
+        $this->sphinxSearch->deleteIndexedFile($file->id);
         return $response->write('удолил');
     }
 

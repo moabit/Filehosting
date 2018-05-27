@@ -52,7 +52,7 @@ $container['HomeController'] = function (Container $c): \Filehosting\Controllers
     return new \Filehosting\Controllers\HomeController($c['twig'], $c['csrf'], $c['sphinxSearch'], $c['uploaderAuth'], $c['fileSystem'],$c['uploadedFileValidator'], $c['getID3']);
 };
 $container['DownloadController'] = function (Container $c): \Filehosting\Controllers\DownloadController {
-    return new \Filehosting\Controllers\DownloadController($c['twig'], $c['csrf'],$c['uploaderAuth'], $c['fileSystem'], $c['commentValidator']);
+    return new \Filehosting\Controllers\DownloadController($c['twig'], $c['csrf'],$c['uploaderAuth'], $c['fileSystem'], $c['commentValidator'], $c['sphinxSearch']);
 };
 $container['SearchController'] = function (Container $c): \Filehosting\Controllers\SearchController {
     return new \Filehosting\Controllers\SearchController($c['twig'], $c['sphinxSearch']);

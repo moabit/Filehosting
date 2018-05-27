@@ -12,12 +12,13 @@
     var submitButton = document.getElementById('submitFileUploadButton');
     var labelFile = document.getElementById('labelUpload');
     var errorList = document.getElementById('error-message');
+    var uploadBlock=document.getElementById('uploadBlock');
     var validateFiles=function (files) {
         var errors=[];
         if (files.length > 1) {
             errors.push('Загрузка нескольких файлов одновременно невозможна');
         }
-        if (files[0].size > 90000000000000000000000000000000000000000000000000000000000000) {
+        if (files[0].size > 900000000000000000000000000000000000000) {
             errors.push ('Ваш файл слишком большой');
         }
        return errors;
@@ -26,12 +27,19 @@
         e.preventDefault();
         var errors = validateFiles(inputFile.files);
         if (errors.length > 0) {
-            errorList.removeAttribute('hidden');
-            for (var i=0; i<errors.length; i++) {
-                var item = document.createElement('li');
-                item.appendChild(document.createTextNode(errors[i]));
-                errorList.appendChild(item);
+            var oldErrorList=document.getElementById('errorList');
+            if (oldErrorList) {
+                oldErrorList.parentNode.removeChild(oldErrorList);
             }
+            var errorList=document.createElement('ul');
+            errorList.setAttribute('class', 'alert alert-danger');
+            errorList.setAttribute('id', 'errorList');
+            for (var key in errors) {
+                var error = document.createElement('li');
+                error.innerHTML = errors[key];
+                errorList.appendChild(error);
+            }
+            uploadBlock.parentNode.insertBefore(errorList, uploadBlock);
         }
         else {
             dropzone.style.cssText="background-color:  #e6e6ff";

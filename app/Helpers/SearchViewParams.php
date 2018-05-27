@@ -28,15 +28,15 @@ class SearchViewParams
 
     protected $filesFound=0;
 
-    public function __construct(array $params, $files)
+    public function __construct(array $params, $files, $filesFound)
     {
         $this->params = $params;
         $this->files=$files;
         if ($this->files) {
-            $this->filesFound=$this->files->count ();
+            $this->filesFound=intval($filesFound);
+            $this->totalPages = ceil($this->filesFound / 1);
         }
-      //  $this->totalPages = ceil($studentQuantity / $limit);
-     //   $this->currentPage = isset($params['page']) ? $params['page'] : 1;
+       $this->currentPage = isset($params['page']) ? $params['page'] : 1;
     }
 
     /**
