@@ -26,15 +26,17 @@ class SearchViewParams
      */
     protected $files;
 
-    protected $filesFound=0;
+    protected $filesFound;
 
     public function __construct(array $params, $files, $filesFound)
     {
         $this->params = $params;
         $this->files=$files;
-        if ($this->files) {
+        if ($filesFound) {
             $this->filesFound=intval($filesFound);
             $this->totalPages = ceil($this->filesFound / 1);
+        } else {
+            $this->filesFound=null;
         }
        $this->currentPage = isset($params['page']) ? $params['page'] : 1;
     }

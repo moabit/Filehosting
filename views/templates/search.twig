@@ -7,7 +7,7 @@
             <h4 class="text-center">Результаты поиска по запросу: {{ viewParams.params['match'] }} </h4>
             <h4 class="text-center">Найдено файлов:{{ viewParams.getFilesFound }} </h4>
                 {% else %}
-                <h4>по запросу: {{ viewParams.params['match'] }} ничего не найдено</h4>
+                <h4 class="text-center">По запросу: {{ viewParams.params['match'] }} ничего не найдено</h4>
                     {% endif %}
         </div>
     </div>
@@ -39,6 +39,6 @@
             </div>
         </div>
     {% endfor %}
-    {% endif %}
     {% include 'pagination.twig' %}
+    {% endif %}
 {% endblock %}
