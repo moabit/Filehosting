@@ -111,8 +111,9 @@ class DownloadController extends Controller
     {
         $file = File::find(intval($args['id']));
         $filePath = $this->fileSystem->getAbsolutePathToFile($file);
-        $file->download_counter++;
-        $file->save();
+        if (!$request->getParam('player')){
+            $file->download_counter++;
+        }
         if (!(in_array('mod_xsendfile', apache_get_modules()))) {
             $response = $response->withHeader('Content-Type', 'application/octet-stream')
                 ->withHeader('Content-Disposition', 'attachment;filename="' . $file->original_name . '"')
@@ -122,6 +123,7 @@ class DownloadController extends Controller
                 ->withHeader('Content-Type', 'application/octet-stream')
                 ->withHeader('Content-Disposition', 'attachment;filename="' . $file->original_name . '"');
         }
+        $file->save();
         return $response;
     }
 

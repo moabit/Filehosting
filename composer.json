@@ -5,7 +5,6 @@
     "illuminate/database": "^5.2",
     "james-heinrich/getid3":"^1.9",
     "slim/csrf":"^0.8",
-    "slim/flash": "^0.1.0",
     "dflydev/fig-cookies": "^1.0.2",
     "videojs/video.js": "^5.10"
   },

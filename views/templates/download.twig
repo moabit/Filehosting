@@ -35,23 +35,26 @@
                     <label for=""> Ссылка</label>
                     <input class="form-control" type="text" placeholder="Readonly input here…" value="{{ link }}"
                            readonly>
+                    {% if isAuth %}
+                        <a href="/delete/file/{{ file.id }}" class="btn btn-outline-danger mt-2">Удалить файл</a>
+                    {% endif %}
                 </div>
                 {% if file.isVideo () or file.isAudio () %}
                 <div class="col-8 ">
                     <div id="file-video-container" class="m-auto" style="width: 50%; height: 50%;">
                         <video id="file-video-player" class="video-js vjs-default-skin vjs-big-play-centered"
                                controls preload="auto" data-setup="{}">
-                            <source src="/file/{{ file.id }}/{{ file.original_name }}">
+                            <source src="/file/{{ file.id }}/{{ file.original_name }}?player=true">
                         </video>
                     </div>
-                    {% endif %}
-                    {% if file.isImage () %}
+                    </div>
+                    {% elseif file.isImage () %}
                    <div class="col offset-3">
                        <img src="{{ pathToThumbnail }}">
                    </div>
                     {% endif %}
         </div>
-            </div>
+
         </div>
     </div>
         {% include 'comments.twig' %}

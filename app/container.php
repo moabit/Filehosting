@@ -5,6 +5,10 @@ use Slim\Container;
 //                                               Error Handlers
 // $container['errorHandler'] = function (Container $c):callable {
 //    return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $e) use ($c):\Slim\Http\Response  {
+//        if ($e instanceof Filehosting\Exceptions\AuthException) {
+//            $response=$response->withStatus(403);
+//            return $c['twig']->render($response, 'error.twig', ['statusCode' => 403, 'message' => 'Действие запрещено']);
+//        }
 //        $response = $response->withStatus(500);
 //        return $c['twig']->render($response, 'error.twig', ['statusCode' => 500, 'message' => 'Что-то пошло не так...']);
 //    };
@@ -15,6 +19,7 @@ use Slim\Container;
 //        return $c['twig']->render($response, 'error.twig', ['statusCode' => 404, 'message' => 'Страницы с таким адресом не существует']);
  //   };
 //};
+
 
 //                                                Dependencies
 
