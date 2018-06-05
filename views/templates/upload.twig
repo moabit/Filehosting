@@ -5,6 +5,11 @@
         <div class="card-body">
             <div class="row" id="uploadBlock">
                 <div class="col-sm-4 offset-sm-4">
+                    {% if isDeleted %}
+                        <div class="alert alert-success" role="alert">
+                           Вы успешно удалили файл!
+                        </div>
+                    {% endif %}
                     <form action="" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="{{ csrfNameKey }}" value="{{ csrfName }}">
                         <input type="hidden" name="{{ csrfValueKey }}" value="{{ csrfValue }}">

@@ -32,9 +32,8 @@
             </div>
             <div class="row">
                 <div class="col-4 mt-2">
-                    <label for=""> Ссылка</label>
-                    <input class="form-control" type="text" placeholder="Readonly input here…" value="{{ link }}"
-                           readonly>
+                    <label for="downloadLink" class="btn-outline-info btn" id="bufferCopyBtn" onclick="copyToClipboard(event)">Скопировать ссылку в буфер</label>
+                    <input class="form-control" type="text"  value="{{ link }}" id="downloadLink">
                     {% if isAuth %}
                         <a href="/delete/file/{{ file.id }}" class="btn btn-outline-danger mt-2">Удалить файл</a>
                     {% endif %}
@@ -62,6 +61,7 @@
 {% block js %}
     <script src="/assets/js/comments.js"></script>
     <script src="/assets/js/video.min.js"></script>
+    <script src="/assets/js/clipboard.js"></script>
     <script>
         var videoPlayer = videojs('file-video-player', {fluid: true, width: 640, height: 360, preload: 'metadata'});
         videojs.options.flash.swf = "/assets/flash/video-js.swf";

@@ -74,6 +74,7 @@ class HomeController extends Controller
      */
     public function index(Request $request, Response $response, array $args = []): Response
     {
+        $isDeleted=$request->getParam('deleted') ? true:false;
         $csrfNameKey = $this->csrf->getTokenNameKey();
         $csrfValueKey = $this->csrf->getTokenValueKey();
         $csrfName = $request->getAttribute($csrfNameKey);
@@ -81,7 +82,9 @@ class HomeController extends Controller
         return $this->twig->render($response, 'upload.twig', ['csrfNameKey' => $csrfNameKey,
             'csrfValueKey' => $csrfValueKey,
             'csrfName' => $csrfName,
-            'csrfValue' => $csrfValue]);
+            'csrfValue' => $csrfValue,
+            'isDeleted' =>$isDeleted
+        ]);
     }
 
     /**

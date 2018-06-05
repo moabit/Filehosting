@@ -153,7 +153,7 @@ class DownloadController extends Controller
         }
         DB::commit();
         $this->sphinxSearch->deleteIndexedFile($file->id);
-        return $response->write('удолил');
+        return $response->withRedirect('/?deleted=success');
     }
 
     /**
