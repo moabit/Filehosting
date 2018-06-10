@@ -5,6 +5,10 @@ use Slim\Container;
 //                                               Error Handlers
 // $container['errorHandler'] = function (Container $c):callable {
 //    return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $e) use ($c):\Slim\Http\Response  {
+//        if ($e instanceof Filehosting\Exceptions\AuthException) {
+//            $response=$response->withStatus(403);
+//            return $c['twig']->render($response, 'error.twig', ['statusCode' => 403, 'message' => 'Действие запрещено']);
+//        }
 //        $response = $response->withStatus(500);
 //        return $c['twig']->render($response, 'error.twig', ['statusCode' => 500, 'message' => 'Что-то пошло не так...']);
 //    };
@@ -13,8 +17,9 @@ use Slim\Container;
 //    return function (\Slim\Http\Request $requset, \Slim\Http\Response $response) use ($c): \Slim\Http\Response  {
 //        $response = $response->withStatus(404);
 //        return $c['twig']->render($response, 'error.twig', ['statusCode' => 404, 'message' => 'Страницы с таким адресом не существует']);
- //   };
+//   };
 //};
+
 
 //                                                Dependencies
 
@@ -27,6 +32,8 @@ $capsule->bootEloquent();
 $container['db'] = function () use ($capsule) {
     return $capsule;
 };
+
+
 // Twig
 $container['twig'] = function (Container $c): \Slim\Views\Twig {
     $twig = new \Slim\Views\Twig('../views/templates', [
@@ -47,10 +54,10 @@ $container['getID3'] = function (Container $c): getID3 {
 };
 // Controllers
 $container['HomeController'] = function (Container $c): \Filehosting\Controllers\HomeController {
-    return new \Filehosting\Controllers\HomeController($c['twig'], $c['csrf'], $c['sphinxSearch'], $c['uploaderAuth'], $c['fileSystem'],$c['uploadedFileValidator'], $c['getID3']);
+    return new \Filehosting\Controllers\HomeController($c['twig'], $c['csrf'], $c['sphinxSearch'], $c['uploaderAuth'], $c['fileSystem'], $c['uploadedFileValidator'], $c['getID3']);
 };
 $container['DownloadController'] = function (Container $c): \Filehosting\Controllers\DownloadController {
-    return new \Filehosting\Controllers\DownloadController($c['twig'], $c['csrf'],$c['uploaderAuth'], $c['fileSystem'], $c['commentValidator']);
+    return new \Filehosting\Controllers\DownloadController($c['twig'], $c['csrf'], $c['uploaderAuth'], $c['fileSystem'], $c['commentValidator'], $c['sphinxSearch']);
 };
 $container['SearchController'] = function (Container $c): \Filehosting\Controllers\SearchController {
     return new \Filehosting\Controllers\SearchController($c['twig'], $c['sphinxSearch']);
@@ -64,7 +71,7 @@ $container['sphinxSearch'] = function (): \Filehosting\Helpers\SphinxSearch {
 };
 // Validators
 $container['commentValidator'] = function (Container $c): \Filehosting\Validators\CommentValidator {
-    return new \Filehosting\Validators\CommentValidator;
+    return new \Filehosting\Validators\CommentValidator ();
 };
 $container['uploadedFileValidator'] = function (Container $c): \Filehosting\Validators\UploadedFileValidator {
     return new \Filehosting\Validators\UploadedFileValidator($c['settings']['uploadedFileSizeLimit']);

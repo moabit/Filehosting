@@ -9,7 +9,9 @@ use Slim\Csrf\Guard;
 use Illuminate\Database\Capsule\Manager as DB;
 use Filehosting\Auth\UploaderAuth;
 use Filehosting\Validators\CommentValidator;
-use Filehosting\Helpers\FileSystem;
+use Filehosting\Helpers\{
+    FileSystem, SphinxSearch
+};
 use Filehosting\Models\{
     File, Comment
 };
@@ -40,21 +42,27 @@ class DownloadController extends Controller
     protected $commentValidator;
 
     /**
+     * @var SphinxSearch
+     */
+    protected $sphinxSearch;
+
+    /**
      * DownloadController constructor.
      * @param \Slim\Container $container
      */
-    public function __construct(Twig $twig, Guard $csrf, UploaderAuth $uploaderAuth, FileSystem $fileSystem, CommentValidator $commentValidator)
+    public function __construct(Twig $twig, Guard $csrf, UploaderAuth $uploaderAuth, FileSystem $fileSystem, CommentValidator $commentValidator, SphinxSearch $sphinxSearch)
     {
         parent::__construct($twig);
         $this->csrf = $csrf;
         $this->uploaderAuth = $uploaderAuth;
         $this->fileSystem = $fileSystem;
         $this->commentValidator = $commentValidator;
+        $this->sphinxSearch = $sphinxSearch;
     }
 
     /**
      *
-     * Shows file's download page
+     * Shows download page
      *
      * @param Request $request
      * @param Response $response
@@ -63,30 +71,20 @@ class DownloadController extends Controller
      */
     public function index(Request $request, Response $response, array $args = []): Response
     {
-        $csrfNameKey = $this->csrf->getTokenNameKey();
-        $csrfValueKey = $this->csrf->getTokenValueKey();
-        $csrfName = $request->getAttribute($csrfNameKey);
-        $csrfValue = $request->getAttribute($csrfValueKey);
-        $fileId = intval($args['id']);
-        $file = File::find($fileId);
+        $file = File::find(intval($args['id']));
         if (!$file) {
             return $response->withStatus(404);
         }
-        $comments = $file->getSortedComments();
-        $commentsAllowed = true;
-        if ($file->countRootComments() > 998) {
-            $commentsAllowed = false;
-        }
-        $link = $request->getUri();
-        return $this->twig->render($response, 'download.twig', ['csrfNameKey' => $csrfNameKey,
-            'csrfValueKey' => $csrfValueKey,
-            'csrfName' => $csrfName,
-            'csrfValue' => $csrfValue,
+        return $this->twig->render($response, 'download.twig', ['csrfNameKey' => $this->csrf->getTokenNameKey(),
+            'csrfValueKey' => $this->csrf->getTokenValueKey(),
+            'csrfName' => $csrfName = $request->getAttribute($this->csrf->getTokenNameKey()),
+            'csrfValue' => $csrfValue = $request->getAttribute($this->csrf->getTokenValueKey()),
             'file' => $file,
-            'link' => $link,
-            'comments' => $comments,
-            'commentsAllowed' => $commentsAllowed,
-            'isAuth' => $this->uploaderAuth->isAuth($request)
+            'link' => $request->getUri(),
+            'comments' => $file->getSortedComments(),
+            'commentsAllowed' => $file->countRootComments() < 998 ? true : false,
+            'isAuth' => $this->uploaderAuth->isAuth($request),
+            'pathToThumbnail' => $file->isImage() ? $this->fileSystem->getPathToThumbnail($file) : null
         ]);
     }
 
@@ -102,19 +100,23 @@ class DownloadController extends Controller
      */
     public function forceFileDownload(Request $request, Response $response, array $args = []): Response
     {
-        $file = File::find(intval($args['id']));
+        $file = File::findOrFail(intval($args['id']));
         $filePath = $this->fileSystem->getAbsolutePathToFile($file);
-        $file->download_counter++;
-        $file->save();
+        if (!$request->getParam('player')) {
+            $file->download_counter++;
+        }
         if (!(in_array('mod_xsendfile', apache_get_modules()))) {
-            $response = $response->withHeader('Content-Type', 'application/octet-stream')
+            $response = $response->withHeader('Content-Type', $file->media_type)
                 ->withHeader('Content-Disposition', 'attachment;filename="' . $file->original_name . '"')
+                ->withHeader('Content-Length', $file->size)
                 ->write($filePath);
         } else {
             $response = $response->withHeader('X-SendFile', $filePath)
-                ->withHeader('Content-Type', 'application/octet-stream')
+                ->withHeader('Content-Type', $file->media_type)
+                ->withHeader('Content-Length', $file->size)
                 ->withHeader('Content-Disposition', 'attachment;filename="' . $file->original_name . '"');
         }
+        $file->save();
         return $response;
     }
 
@@ -131,11 +133,12 @@ class DownloadController extends Controller
      */
     public function deleteFile(Request $request, Response $response, array $args = []): Response
     {
-        $file = File::find(intval($args['id']));
+        $file = File::findOrFail(intval($args['id']));
         $filePath = $this->fileSystem->getAbsolutePathToFile($file);
         try {
             DB::beginTransaction();
             unlink($filePath);
+            $file->comments->delete();
             File::destroy($file->id);
             $response = $this->uploaderAuth->deleteUploaderToken($file->id, $response);
         } catch (\Exception $e) {
@@ -143,13 +146,14 @@ class DownloadController extends Controller
             throw new $e;
         }
         DB::commit();
-        return $response->write('удолил');
+        $this->sphinxSearch->deleteIndexedFile($file->id);
+        return $response->withRedirect('/?deleted=success');
     }
 
     /**
      *
-     * Adds a comment to the file
-     *
+     * Creates and adds a comment from parsed post-vars
+     *  If there are more than 998 comments throws CommentAdditionException
      * @param Request $request
      * @param Response $response
      * @param array $args
@@ -158,35 +162,34 @@ class DownloadController extends Controller
      */
     public function addComment(Request $request, Response $response, array $args = []): Response
     {
-        $file = File::find(intval($args['id']));
+        $file = File::findOrFail(intval($args['id']));
         if ($file->countRootComments() > 998) {
-            // throws an Exception because matpath format which is used in app doesn't expect more than 999 root comments
+            // throws an Exception because matpath format which is used in the app doesn't expect more than 999 root comments
             throw new CommentAdditionException('Комментарии закрыты');
         }
         // Parses POST-vars
-        $commentAuthor = $request->getParam('author');
-        $commentText = $request->getParam('comment');
         $parentId = intval($request->getParam('parentId'));
-        $comment = new Comment ();
-        $comment->fill(['file_id' => $file->id, 'text' => $commentText, 'author' => $commentAuthor, 'parent_id' => $parentId]);
+        $comment = new Comment (['file_id' => $file->id,
+            'comment_text' => $request->getParam('comment'),
+            'author' => $request->getParam('author')]);
+        if ($parentId) {
+            $comment->parent_id = $parentId;
+        }
         $comment->generateMatpath();
         $errors = $this->commentValidator->validate($comment);
         if (empty($errors)) {
             $comment->save();
+            $date = new \DateTime('now');
+            $comment->posted = $date->format('m/d/Y'); // sets a date in order to use it in the template
             if ($request->isXhr()) {
                 return $response->withJson($comment);
             }
             return $response->withRedirect($request->getUri());
-        } else { //тут трешак в коде
-            return $this->twig->render($response, 'download.twig', ['csrfNameKey' => $csrfNameKey,
-                'csrfValueKey' => $csrfValueKey,
-                'csrfName' => $csrfName,
-                'csrfValue' => $csrfValue,
-                'file' => $file,
-                'link' => $link,
-                'comments' => $comments,
-                'errors' => $errors
-            ]);
+        } else {
+            if ($request->isXhr()) {
+                return $response->withJson($errors);
+            }
+            return $response->withRedirect($request->getUri());
         }
     }
 }

@@ -4,6 +4,10 @@
 namespace Filehosting\Helpers;
 
 
+/**
+ * Class SearchViewParams
+ * @package Filehosting\Helpers
+ */
 class SearchViewParams
 {
     /**
@@ -15,7 +19,7 @@ class SearchViewParams
      */
     protected $totalPages;
     /**
-     * @var int|mixed
+     * @var int
      */
     protected $currentPage;
     /**
@@ -26,20 +30,34 @@ class SearchViewParams
      */
     protected $files;
 
-    protected $filesFound=0;
+    /**
+     * @var null
+     */
+    protected $filesFound;
 
-    public function __construct(array $params, $files)
+    /**
+     * SearchViewParams constructor.
+     *
+     * @param array $params
+     * @param $files
+     * @param $filesFound
+     */
+    public function __construct(array $params, $files, $filesFound)
     {
         $this->params = $params;
-        $this->files=$files;
-        if ($this->files) {
-            $this->filesFound=$this->files->count ();
+        $this->files = $files;
+        if ($filesFound) {
+            $this->filesFound = intval($filesFound);
+            $this->totalPages = ceil($this->filesFound / 1);
+        } else {
+            $this->filesFound = null;
         }
-      //  $this->totalPages = ceil($studentQuantity / $limit);
-     //   $this->currentPage = isset($params['page']) ? $params['page'] : 1;
+        $this->currentPage = isset($params['page']) ? $params['page'] : 1;
     }
 
     /**
+     * Generates pagination link
+     *
      * @param $page
      * @return string
      */
@@ -47,7 +65,10 @@ class SearchViewParams
     {
         return '?' . $this->generateURL(['page' => $page]);
     }
+
     /**
+     * Generates link
+     *
      * @param $params
      * @return string
      */
@@ -55,21 +76,30 @@ class SearchViewParams
     {
         return http_build_query(array_replace($this->params, $params));
     }
+
     /**
-     * @return float
+     * Returns total number of pages
+     *
+     * @return int
      */
     public function getTotalPages(): int
     {
         return $this->totalPages;
     }
+
     /**
-     * @return int|mixed
+     * Returns number of current page
+     *
+     * @return int
      */
     public function getCurrentPage(): int
     {
         return $this->currentPage;
     }
+
     /**
+     * Returns search params
+     *
      * @return mixed
      */
     public function getSearch()
@@ -77,7 +107,12 @@ class SearchViewParams
         return $this->params['search'];
     }
 
-    public function isSearchSuccessful ():bool
+    /**
+     * Returns true if files were found
+     *
+     * @return bool
+     */
+    public function isSearchSuccessful(): bool
     {
         if ($this->files) {
             return true;
@@ -85,20 +120,33 @@ class SearchViewParams
         return false;
     }
 
-    public function getParams () :array
+    /**
+     * Returns an array of search params
+     *
+     * @return array
+     */
+    public function getParams(): array
     {
         return $this->params;
     }
 
-    public function getFiles () :\Illuminate\Support\Collection
+    /**
+     * Returns collection of found files
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getFiles(): \Illuminate\Support\Collection
     {
         return $this->files;
     }
 
-    public function getFilesFound () :int
+    /**
+     * Returns quantity of found files
+     *
+     * @return int
+     */
+    public function getFilesFound(): int
     {
         return $this->filesFound;
     }
-
-
 }

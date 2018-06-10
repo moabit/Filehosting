@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/css/filehosting.css">
+    <link href="/assets/css/video-js.min.css" rel="stylesheet">
     <title> {% block title %} {% endblock %}</title>
 </head>
 <body>
@@ -11,9 +12,9 @@
 {% include 'header.twig' %}
 {% endblock %}
 <div class="container">
-    {% block content %} {% endblock %}
+    {% block content %}
+    {% endblock %}
 </div>
-
 {% block js %}
 {% endblock %}
 </body>

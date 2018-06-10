@@ -5,22 +5,36 @@ namespace Filehosting\Validators;
 
 use Filehosting\Exceptions\FileUploadException;
 
+/**
+ * Class UploadedFileValidator
+ * @package Filehosting\Validators
+ */
 class UploadedFileValidator
 {
+    /**
+     * @var int
+     */
     public $fileSizeLimit;
-    public function __construct (int $fileSizeLimit)
+
+    /**
+     * UploadedFileValidator constructor.
+     * @param int $fileSizeLimit
+     */
+    public function __construct(int $fileSizeLimit)
     {
-        $this->fileSizeLimit=$fileSizeLimit;
+        $this->fileSizeLimit = $fileSizeLimit;
     }
-    public function validate (\Slim\Http\UploadedFile $file) //void
+
+    /**
+     * @param \Slim\Http\UploadedFile $file
+     * @throws FileUploadException
+     */
+    public function validate(\Slim\Http\UploadedFile $file) //void
     {
-        if (!$file) {
-            throw new FileUploadException('Файл отсутствует');
-        }
         if ($file->getError() !== UPLOAD_ERR_OK) {
             throw new FileUploadException('Не удалось загрузить файл. Ошибка: ' . $file->getError());
         }
-        if ($file->getSize()>$this->fileSizeLimit) {
+        if ($file->getSize() > $this->fileSizeLimit) {
             throw new FileUploadException("Превышение лимита. Размер заруженного файла: {$file->getSize()}. Установленный лимит: {$this->fileSizeLimit}");
         }
     }

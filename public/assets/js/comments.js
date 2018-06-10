@@ -11,23 +11,46 @@ function addComment(e, buttonId) {
     var formData = new FormData(form);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
-            var comment = JSON.parse(xhr.response);
-            var depth = comment.matpath.split('.').length;
-            var div = document.createElement("div");
-            var date = new Date();
-            div.style = 'margin-left: '+(depth*30)+'px'+ ' !important';
-            div.innerHTML = "<hr>" + comment.author + date + "<br>" + comment.text + "<hr>";
-            if (depth == 1) { //root
-                var comments = document.getElementById('commentBlock');
-                comments.appendChild(div);
-            } else { // child
-                var parent = document.getElementById(comment.parent_id);
-                parent.parentNode.insertBefore(div, parent.nextSibling);
-
+            var response = JSON.parse(xhr.response);
+            if (!response.hasOwnProperty('author')) { // server side validation error
+                var oldErrorList = document.getElementById('errorList');
+                if (oldErrorList) {
+                    oldErrorList.parentNode.removeChild(oldErrorList);
+                }
+                var errorList = document.createElement('ul');
+                errorList.setAttribute('class', 'alert alert-danger');
+                errorList.setAttribute('id', 'errorList');
+                for (var key in response) {
+                    var error = document.createElement('li');
+                    error.innerHTML = response[key];
+                    errorList.appendChild(error);
+                }
+                var form=document.getElementById('mainCommentForm');
+                form.parentNode.insertBefore(errorList,form);
             }
+            else { // server side validation succeded
+                var depth = response.matpath.split('.').length;
+                var newComment = document.createElement('div');
+                newComment.setAttribute("class", "m-1 border p-3");
+                var commentHeader = document.createElement('div');
+                commentHeader.setAttribute('class', "font-italic");
+                var commentText = document.createElement('div');
+                newComment.style = 'margin-left: ' + (depth * 30) + 'px' + ' !important';
+                commentHeader.innerHTML = response.author + " " + response.posted;
+                commentText.innerHTML = response.comment_text;
+                newComment.appendChild(commentHeader);
+                newComment.appendChild(commentText);
+                if (depth == 1) { //root
+                    var comments = document.getElementById('commentBlock');
+                    comments.appendChild(newComment);
+                } else { // child
+                    var parent = document.getElementById(response.parent_id);
+                    parent.parentNode.insertBefore(newComment, parent.nextSibling);
+                }
+            }
+            var textarea = document.getElementById('textarea');
+            textarea.value = '';
         }
-        var textarea = document.getElementById('textarea');
-        textarea.value = '';
     };
     xhr.send(formData);
 }
@@ -35,12 +58,10 @@ function addComment(e, buttonId) {
 function showReplyForm(id) {
     var oldReplyForm = document.getElementById('replyForm');
     if (oldReplyForm) {
-
         oldReplyForm.parentNode.removeChild(oldReplyForm);
     }
     var form = document.getElementById('mainCommentForm');
     var replyForm = form.cloneNode(true);
-    //  replyForm.setAttribute('id','opened');
     replyForm.id = 'replyForm';
     replyForm.parentId.value = id;
     replyForm.className += " border p-3 border-info";
