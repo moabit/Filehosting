@@ -16,7 +16,7 @@ class Util
      * @return array
      * @throws ConfigException
      */
-    public static function readJSON($JSONpath):array
+    public static function readJSON($JSONpath): array
     {
         if (!file_exists($JSONpath)) {
             throw new ConfigException('Файл конфигурации не существует');
@@ -35,7 +35,7 @@ class Util
      * @param int $length
      * @return string
      */
-    public static function generateToken ($length = 16) : string
+    public static function generateToken($length = 16): string
     {
         return $token = bin2hex(random_bytes($length));
     }
@@ -47,12 +47,12 @@ class Util
      * @param string $normalizedFilename
      * @return null|string|string[]
      */
-    public static function generateSafeFilename (string $normalizedFilename)
+    public static function generateSafeFilename(string $normalizedFilename)
     {
-        $safeName= transliterator_transliterate('Any-Latin; Latin-ASCII', $normalizedFilename);
+        $safeName = transliterator_transliterate('Any-Latin; Latin-ASCII', $normalizedFilename);
         // normalizes file's name one more time because after transliteration it can contain more characters than allowed
-        $safeName=self::normalizeFilename($safeName);
-        return  preg_replace('/.(htaccess|php|html|phtml)$/', '.txt', $safeName);
+        $safeName = self::normalizeFilename($safeName);
+        return preg_replace('/.(htaccess|php|html|phtml)$/', '.txt', $safeName);
     }
 
     /**
@@ -64,12 +64,11 @@ class Util
      */
     public static function normalizeFilename($filename)
     {
-        $ext=self::getFileExtension($filename);
-        if (mb_strlen($ext)>10) {
+        $ext = self::getFileExtension($filename);
+        if (mb_strlen($ext) > 10) {
             $filename = substr($filename, 0, 150);
-        }
-        elseif (mb_strlen($filename) > 150) {
-            $filename = substr($filename, 0, 150 - (mb_strlen($ext)+1)) . '.' . $ext;
+        } elseif (mb_strlen($filename) > 150) {
+            $filename = substr($filename, 0, 150 - (mb_strlen($ext) + 1)) . '.' . $ext;
         }
         return $filename;
     }
@@ -79,9 +78,9 @@ class Util
      * @param string $filename
      * @return string
      */
-    private static function getFileExtension (string $filename)
+    private static function getFileExtension(string $filename)
     {
-        if (!strpos($filename, '.')){
+        if (!strpos($filename, '.')) {
             return '';
         }
         preg_match('/.([^\.]+$)/i', $filename, $extension);

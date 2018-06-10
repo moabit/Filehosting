@@ -65,7 +65,7 @@ class HomeController extends Controller
 
     /**
      *
-     * Shows main page
+     * Shows main page with file upload form
      *
      * @param $request
      * @param $response
@@ -74,16 +74,11 @@ class HomeController extends Controller
      */
     public function index(Request $request, Response $response, array $args = []): Response
     {
-        $isDeleted=$request->getParam('deleted') ? true:false;
-        $csrfNameKey = $this->csrf->getTokenNameKey();
-        $csrfValueKey = $this->csrf->getTokenValueKey();
-        $csrfName = $request->getAttribute($csrfNameKey);
-        $csrfValue = $request->getAttribute($csrfValueKey);
-        return $this->twig->render($response, 'upload.twig', ['csrfNameKey' => $csrfNameKey,
-            'csrfValueKey' => $csrfValueKey,
-            'csrfName' => $csrfName,
-            'csrfValue' => $csrfValue,
-            'isDeleted' =>$isDeleted
+        return $this->twig->render($response, 'upload.twig', ['csrfNameKey' => $this->csrf->getTokenNameKey(),
+            'csrfValueKey' => $this->csrf->getTokenValueKey(),
+            'csrfName' => $request->getAttribute($this->csrf->getTokenNameKey()),
+            'csrfValue' => $request->getAttribute($this->csrf->getTokenValueKey()),
+            'isDeleted' => $request->getParam('deleted') ? true : false
         ]);
     }
 
@@ -100,9 +95,8 @@ class HomeController extends Controller
     public function uploadFile(Request $request, Response $response, array $args = []): Response
     {
         $file = $request->getUploadedFiles()['userFile'];
-        $this->uploadedFileValidator->validate($file);
-        // проверить есть ли файл или
-       try {
+        $this->uploadedFileValidator->validate($file); // checks if a file exists and etc
+        try {
             DB::beginTransaction();
             $fileName = Util::normalizeFilename($file->getClientFilename());
             $uploaderToken = Util::generateToken();
@@ -114,17 +108,17 @@ class HomeController extends Controller
             $this->fileSystem->moveUploadedFileToStorage($file, $model);
             $path = $this->fileSystem->getAbsolutePathToFile($model);
             $model->info = json_encode($this->getID3->analyze($path));
-           if ($model->isImage ()) {
-          $this->fileSystem->generateThumbnail($model, $path);
-          }
+            if ($model->isImage()) {
+                $this->fileSystem->generateThumbnail($model, $path);
+            }
             $model->save();
-       } catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             throw new $e;
         }
         DB::commit();
-       $this->sphinxSearch->indexFile($model->id, $model->original_name);
-       $response = $response->withRedirect('file/' . $model->id);
+        $this->sphinxSearch->indexFile($model->id, $model->original_name);
+        $response = $response->withRedirect('file/' . $model->id);
         $response = $this->uploaderAuth->setUploaderToken($uploaderToken, $response, $model->id);
         return $response;
     }

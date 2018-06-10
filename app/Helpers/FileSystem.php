@@ -67,14 +67,13 @@ class FileSystem
             throw new FileSystemException('Файл не является изображением');
         }
         $thumbnail = new \Imagick ($absolutePathToImage);
-        $thumbnail->thumbnailImage(200, 0);
+        $thumbnail->thumbnailImage(200, 200, true);
         $path = "{$this->generateAbsolutePathToThumbnail($image->uploaded)}/{$this->generateStorageFilename($image)}"; // здесь функция
         $thumbnail->writeImage($path);
     }
 
     /**
-     * Return absolute path to image's thumbnail in the storage
-     * If file is not image or thumbnail doesn't exist throws FileSystemException
+     * Returns an absolute path to image's thumbnail
      * @param \Filehosting\Models\File $image
      * @return string
      * @throws FileSystemException
@@ -84,15 +83,15 @@ class FileSystem
         if (!($image->isImage())) {
             throw new FileSystemException('Файл не является изображением');
         }
-        $uploadDate=new \DateTime($image->uploaded);
+        $uploadDate = new \DateTime($image->uploaded);
         $uploadDate = $uploadDate->format('d-M-Y');
         $path = "/thumbnails/{$uploadDate}/{$this->generateStorageFilename($image)}";
         return $path;
     }
 
     /**
-     * Takes timestamp as an argument or uses uses current timestamp by default
-     * Checks if there is a directory with the name of the value of a given timestamp in format d-M-Y
+     * Takes a timestamp as an argument or uses current timestamp by default
+     * Checks if there is a directory with the name of the value of given timestamp in format d-M-Y
      * If directory is set, returns a path to it and if not creates it
      * Throws FileSystemException if a directory wasn't createad or doesn't exist
      * @return string
@@ -116,11 +115,16 @@ class FileSystem
         return $path;
     }
 
-    private function generateAbsolutePathToThumbnail($uploadDate):string
+    /**
+     * @param $uploadDate
+     * @return string
+     * @throws FileSystemException
+     */
+    private function generateAbsolutePathToThumbnail($uploadDate): string
     {
         $uploadDate = new \DateTime ($uploadDate);
         $uploadDate = $uploadDate->format('d-M-Y');
-        $path="{$this->rootDir}/public/thumbnails/{$uploadDate}";
+        $path = "{$this->rootDir}/public/thumbnails/{$uploadDate}";
         if (!is_dir($path)) {
             if (!mkdir($path, 0777, true)) {
                 throw new FileSystemException('Не удалось создать директорию');

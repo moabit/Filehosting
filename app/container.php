@@ -17,7 +17,7 @@ use Slim\Container;
 //    return function (\Slim\Http\Request $requset, \Slim\Http\Response $response) use ($c): \Slim\Http\Response  {
 //        $response = $response->withStatus(404);
 //        return $c['twig']->render($response, 'error.twig', ['statusCode' => 404, 'message' => 'Страницы с таким адресом не существует']);
- //   };
+//   };
 //};
 
 
@@ -54,10 +54,10 @@ $container['getID3'] = function (Container $c): getID3 {
 };
 // Controllers
 $container['HomeController'] = function (Container $c): \Filehosting\Controllers\HomeController {
-    return new \Filehosting\Controllers\HomeController($c['twig'], $c['csrf'], $c['sphinxSearch'], $c['uploaderAuth'], $c['fileSystem'],$c['uploadedFileValidator'], $c['getID3']);
+    return new \Filehosting\Controllers\HomeController($c['twig'], $c['csrf'], $c['sphinxSearch'], $c['uploaderAuth'], $c['fileSystem'], $c['uploadedFileValidator'], $c['getID3']);
 };
 $container['DownloadController'] = function (Container $c): \Filehosting\Controllers\DownloadController {
-    return new \Filehosting\Controllers\DownloadController($c['twig'], $c['csrf'],$c['uploaderAuth'], $c['fileSystem'], $c['commentValidator'], $c['sphinxSearch']);
+    return new \Filehosting\Controllers\DownloadController($c['twig'], $c['csrf'], $c['uploaderAuth'], $c['fileSystem'], $c['commentValidator'], $c['sphinxSearch']);
 };
 $container['SearchController'] = function (Container $c): \Filehosting\Controllers\SearchController {
     return new \Filehosting\Controllers\SearchController($c['twig'], $c['sphinxSearch']);
