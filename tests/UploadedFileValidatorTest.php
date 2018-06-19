@@ -1,6 +1,7 @@
 <?php
 
 namespace Testsuite;
+
 use PHPUnit\Framework\TestCase;
 use Filehosting\Validators\UploadedFileValidator;
 use Slim\Http\UploadedFile;
@@ -15,20 +16,20 @@ class UploadedFileValidatorTest extends TestCase
         $this->validator = new UploadedFileValidator(10000);
     }
 
-    public function testValidationSuccess ()
+    public function testValidationSuccess()
     {
-        $file=new UploadedFile("/resources/storage", "test.jpg", "image/jpeg", 1000, UPLOAD_ERR_OK);
+        $file = new UploadedFile("/resources/storage", "test.jpg", "image/jpeg", 1000, UPLOAD_ERR_OK);
         $this->assertEmpty($this->validator->validate($file));
     }
 
-    public function testValidationWithError ()
+    public function testValidationWithError()
     {
         $badFile = new UploadedFile("/resources/storage", "test.jpg", "image/jpeg", 10000, UPLOAD_ERR_NO_FILE);
         $this->expectException(FileUploadException::class);
         $this->validator->validate($badFile);
     }
 
-    public function testValidationWithExceededSizeLimit ()
+    public function testValidationWithExceededSizeLimit()
     {
         $badFile = new UploadedFile("/resources/storage", "test.jpg", "image/jpeg", 20000, UPLOAD_ERR_OK);
         $this->expectException(FileUploadException::class);

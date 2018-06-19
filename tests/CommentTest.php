@@ -10,8 +10,8 @@ class CommentTest extends Testcase
 {
     public function testGetDepth()
     {
-        $comment= new Comment ();
-        $comment->matpath="001.001.001.001";
+        $comment = new Comment ();
+        $comment->matpath = "001.001.001.001";
         $this->assertEquals(4, $comment->getDepth());
     }
 }
