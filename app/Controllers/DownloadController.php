@@ -75,6 +75,8 @@ class DownloadController extends Controller
         if (!$file) {
             return $response->withStatus(404);
         }
+        $file->size = round($file->size / (1024 * 1024), 2);
+        $file->uploaded = date("m/d/Y", strtotime($file->uploaded));
         return $this->twig->render($response, 'download.twig', ['csrfNameKey' => $this->csrf->getTokenNameKey(),
             'csrfValueKey' => $this->csrf->getTokenValueKey(),
             'csrfName' => $csrfName = $request->getAttribute($this->csrf->getTokenNameKey()),
