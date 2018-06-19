@@ -78,7 +78,7 @@ class Util
      * @param string $filename
      * @return string
      */
-    private static function getFileExtension(string $filename)
+    public static function getFileExtension(string $filename)
     {
         if (!strpos($filename, '.')) {
             return '';
