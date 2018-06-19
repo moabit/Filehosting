@@ -12,6 +12,7 @@ use Filehosting\Exceptions\FileUploadException;
 class UploadedFileValidator
 {
     /**
+     * In MB
      * @var int
      */
     public $fileSizeLimit;

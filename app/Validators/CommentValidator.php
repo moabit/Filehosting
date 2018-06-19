@@ -18,12 +18,12 @@ class CommentValidator
      */
     public function validate(\Filehosting\Models\Comment $comment): array
     {
-        $errors = [];
+        $errors['errors'] = [];
         if (mb_strlen($comment->author) < 3 || $comment->author == null) { // checks a comment's author name
-            $errors[] = 'Имя автора не может быть короче трех знаков';
+            $errors['errors'][] = 'Имя автора не может быть короче трех знаков';
         }
-        if (mb_strlen($comment->text) > 1000 || $comment->text == null) { // checks a comment's text
-            $errors[] = 'Ваш комментарий слишком длинный. Сократите его до 1000 знаков (это примерно полстраницы А4)';
+        if (mb_strlen($comment->comment_text) > 1000 || $comment->comment_text == null) { // checks a comment's text
+            $errors['errors'][] = 'Ваш комментарий слишком длинный. Сократите его до 1000 знаков (это примерно полстраницы А4)';
         }
 
         if (!($comment->parent_id == null || (is_int($comment->parent_id) && $comment->parent_id > 0))) {

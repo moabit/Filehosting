@@ -177,7 +177,7 @@ class DownloadController extends Controller
         }
         $comment->generateMatpath();
         $errors = $this->commentValidator->validate($comment);
-        if (empty($errors)) {
+        if (empty($errors['errors'])) {
             $comment->save();
             $date = new \DateTime('now');
             $comment->posted = $date->format('m/d/Y'); // sets a date in order to use it in the template

@@ -12,7 +12,7 @@ function addComment(e, buttonId) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             var response = JSON.parse(xhr.response);
-            if (!response.hasOwnProperty('author')) { // server side validation error
+            if (response.hasOwnProperty('errors')) { // server side validation error
                 var oldErrorList = document.getElementById('errorList');
                 if (oldErrorList) {
                     oldErrorList.parentNode.removeChild(oldErrorList);
@@ -25,8 +25,8 @@ function addComment(e, buttonId) {
                     error.innerHTML = response[key];
                     errorList.appendChild(error);
                 }
-                var form=document.getElementById('mainCommentForm');
-                form.parentNode.insertBefore(errorList,form);
+                var form = document.getElementById('mainCommentForm');
+                form.parentNode.insertBefore(errorList, form);
             }
             else { // server side validation succeded
                 var depth = response.matpath.split('.').length;

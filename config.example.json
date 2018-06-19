@@ -1,16 +1,21 @@
 {
   "settings": {
-    "displayErrorDetails":true,
+    "displayErrorDetails": true,
     "addContentLengthHeader": true,
     "db": {
-      "driver":"mysql",
+      "driver": "pgsql",
       "host": "localhost",
-      "database" : "filehosting",
-      "username" : "root",
-      "password" : "1234",
-      "charset"  : "utf8mb4",
-      "collation" : "utf8_unicode_ci",
-      "prefix"    : ""
+      "database": "filehosting",
+      "username": "root",
+      "password": "1234",
+      "charset": "utf8mb4",
+      "collation": "utf8_unicode_ci",
+      "prefix": ""
+    },
+    "sphinx": {
+      "driver": "mysql",
+      "host": "127.0.0.1",
+      "port": "9306"
     }
   }
 }

@@ -12,26 +12,26 @@
     var submitButton = document.getElementById('submitFileUploadButton');
     var labelFile = document.getElementById('labelUpload');
     var errorList = document.getElementById('error-message');
-    var uploadBlock=document.getElementById('uploadBlock');
-    var validateFiles=function (files) {
-        var errors=[];
+    var uploadBlock = document.getElementById('uploadBlock');
+    var validateFiles = function (files) {
+        var errors = [];
         if (files.length > 1) {
             errors.push('Загрузка нескольких файлов одновременно невозможна');
         }
         if (files[0].size > 900000000000000000000000000000000000000) {
-            errors.push ('Ваш файл слишком большой');
+            errors.push('Ваш файл слишком большой');
         }
-       return errors;
+        return errors;
     };
     inputFile.oninput = function (e) {
         e.preventDefault();
         var errors = validateFiles(inputFile.files);
         if (errors.length > 0) {
-            var oldErrorList=document.getElementById('errorList');
+            var oldErrorList = document.getElementById('errorList');
             if (oldErrorList) {
                 oldErrorList.parentNode.removeChild(oldErrorList);
             }
-            var errorList=document.createElement('ul');
+            var errorList = document.createElement('ul');
             errorList.setAttribute('class', 'alert alert-danger');
             errorList.setAttribute('id', 'errorList');
             for (var key in errors) {
@@ -42,17 +42,18 @@
             uploadBlock.parentNode.insertBefore(errorList, uploadBlock);
         }
         else {
-            dropzone.style.cssText="background-color:  #e6e6ff";
-            labelFile.textContent=inputFile.files[0].name;}
+            dropzone.style.cssText = "background-color:  #e6e6ff";
+            labelFile.textContent = inputFile.files[0].name;
+        }
     };
     dropzone.ondrop = function (e) {
         e.preventDefault();
         inputFile.files = e.dataTransfer.files;
-        labelFile.textContent=inputFile.files[0].name;
+        labelFile.textContent = inputFile.files[0].name;
     };
     dropzone.ondragover = function (e) {
         e.preventDefault();
-        this.style.cssText="background-color:  #e6e6ff";
+        this.style.cssText = "background-color:  #e6e6ff";
         return false;
     };
     dropzone.ondragleave = function (e) {

@@ -36,12 +36,13 @@ function moveFiles(array $files)
         } else {
             $files = array_diff(scandir($filePath), ['.', '..']);
             foreach ($files as $file) {
-                if (!copy($filePath.$file, $fontsDir . $file)) {
+                if (!copy($filePath . $file, $fontsDir . $file)) {
                     exit ("При установке произошла ошибка: проблема с файлом {$file}\n");
                 }
             }
         }
     }
 }
+
 moveFiles($dependencies);
 exit ("Зависимости установлены!\n");
