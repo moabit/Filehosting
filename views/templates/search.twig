@@ -4,18 +4,18 @@
     <div class="card mt-3">
         <div class="card-body">
             {% if viewParams.isSearchSuccessful () %}
-            <h4 class="text-center">Результаты поиска по запросу: {{ viewParams.params['match'] }} </h4>
-            <h4 class="text-center">Найдено файлов:{{ viewParams.getFilesFound }} </h4>
-                {% else %}
+                <h4 class="text-center">Результаты поиска по запросу: {{ viewParams.params['match'] }} </h4>
+                <h4 class="text-center">Найдено файлов:{{ viewParams.getFilesFound }} </h4>
+            {% else %}
                 <h4 class="text-center">По запросу: {{ viewParams.params['match'] }} ничего не найдено</h4>
-                    {% endif %}
+            {% endif %}
         </div>
     </div>
     {% if viewParams.isSearchSuccessful () %}
-    {% for file in viewParams.files %}
-        <div class="card mt-3">
-            <div class="card-body">
-                <h4>{{file.original_name}}</h4>
+        {% for file in viewParams.files %}
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4>{{ file.original_name }}</h4>
 
                     <table class="table table-bordered text-center">
                         <thead>
@@ -35,10 +35,10 @@
                         </tr>
                         </tbody>
                     </table>
-                <a href="/file/{{ file.id }}" class="btn btn-outline-info">скачать</a>
+                    <a href="/file/{{ file.id }}" class="btn btn-outline-info">скачать</a>
+                </div>
             </div>
-        </div>
-    {% endfor %}
-    {% include 'pagination.twig' %}
+        {% endfor %}
+        {% include 'pagination.twig' %}
     {% endif %}
 {% endblock %}

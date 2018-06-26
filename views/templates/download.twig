@@ -32,30 +32,31 @@
             </div>
             <div class="row">
                 <div class="col-4 mt-2">
-                    <label for="downloadLink" class="btn-outline-info btn" id="bufferCopyBtn" onclick="copyToClipboard(event)">Скопировать ссылку в буфер</label>
-                    <input class="form-control" type="text"  value="{{ link }}" id="downloadLink">
+                    <label for="downloadLink" class="btn-outline-info btn" id="bufferCopyBtn"
+                           onclick="copyToClipboard(event)">Скопировать ссылку в буфер</label>
+                    <input class="form-control" type="text" value="{{ link }}" id="downloadLink">
                     {% if isAuth %}
                         <a href="/delete/file/{{ file.id }}" class="btn btn-outline-danger mt-2">Удалить файл</a>
                     {% endif %}
                 </div>
                 {% if file.isVideo () or file.isAudio () %}
-                <div class="col-8 ">
-                    <div id="file-video-container" class="m-auto" style="width: 75%; height: 75%;">
-                        <video id="file-video-player" class="video-js vjs-default-skin vjs-big-play-centered"
-                               controls preload="auto" data-setup="{}">
-                            <source src="/file/{{ file.id }}/{{ file.original_name }}?player=true">
-                        </video>
+                    <div class="col-8 ">
+                        <div id="file-video-container" class="m-auto" style="width: 75%; height: 75%;">
+                            <video id="file-video-player" class="video-js vjs-default-skin vjs-big-play-centered"
+                                   controls preload="auto" data-setup="{}">
+                                <source src="/file/{{ file.id }}/{{ file.original_name }}?player=true">
+                            </video>
+                        </div>
                     </div>
+                {% elseif file.isImage () %}
+                    <div class="col offset-3">
+                        <img src="{{ pathToThumbnail }}">
                     </div>
-                    {% elseif file.isImage () %}
-                   <div class="col offset-3">
-                       <img src="{{ pathToThumbnail }}">
-                   </div>
-                    {% endif %}
-        </div>
+                {% endif %}
+            </div>
         </div>
     </div>
-        {% include 'comments.twig' %}
+    {% include 'comments.twig' %}
 {% endblock %}
 {% block js %}
     <script src="/assets/js/comments.js"></script>

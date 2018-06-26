@@ -7,15 +7,17 @@
                 <div class="col-sm-4 offset-sm-4">
                     {% if isDeleted %}
                         <div class="alert alert-success" role="alert">
-                           Вы успешно удалили файл!
+                            Вы успешно удалили файл!
                         </div>
                     {% endif %}
                     <form action="" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="{{ csrfNameKey }}" value="{{ csrfName }}">
                         <input type="hidden" name="{{ csrfValueKey }}" value="{{ csrfValue }}">
-                        <input type="file" hidden required name="userFile"  id="inputFileUpload">
-                        <label class="btn btn-primary  btn-block  mt-5 file-upload-label" for="inputFileUpload" id="labelUpload">Выберите файл</label>
-                        <input type="submit"  class="btn btn-primary  btn-block  mb-4" id="submitFileUploadButton" value="Загрузить">
+                        <input type="file" hidden required name="userFile" id="inputFileUpload">
+                        <label class="btn btn-primary  btn-block  mt-5 file-upload-label" for="inputFileUpload"
+                               id="labelUpload">Выберите файл</label>
+                        <input type="submit" class="btn btn-primary  btn-block  mb-4" id="submitFileUploadButton"
+                               value="Загрузить">
                     </form>
                 </div>
             </div>
