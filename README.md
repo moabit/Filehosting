@@ -1,12 +1,12 @@
 # Filehosting
 Simple Slim Framework File Sharing App
 
-##Features
+## Features
 1. Upload, download (via PHP or mod_xsend) or delete files
 2. Hierarchical AJAX comments
 3. Search based on Sphinx search engine
 
-##Used technologies
+## Used technologies
 
 1. Slim Framework
 2. PostgreSQL
@@ -17,14 +17,14 @@ Simple Slim Framework File Sharing App
 7. Bootstrap
 8. Videojs player
 
-##Requirements
+## Requirements
 
 1. PHP 7+ with mbstring, PDO and intl extensions
 2. Sphinx Search
 3. Composer
 4. PostgreSQL 
 
-##Installation
+## Installation
 
 1. Clone the project with `clone https://github.com/moabit/filehosting.git`
 2. Run `composer install` to install dependencies
